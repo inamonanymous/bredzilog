@@ -1,0 +1,12 @@
+body {
+    
+    background-image: url('../img/bg-1.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    height: 100%;
+}
+
+h1 {
+    color: beige;
+}

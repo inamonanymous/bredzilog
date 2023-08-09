@@ -1,0 +1,31 @@
+.table-responsive {
+    max-height: 500px; /* Change this value to set the desired maximum height */
+    overflow-y: auto; /* Add vertical scrollbar if content overflows */
+    width: 600px;
+    background-color: transparent;
+    text-align: center;
+  }
+
+  .container {
+    /* Replace 'background.jpg' with the URL of your background image */
+    background-image: url('img/bg-1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  .list-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 500px;
+    height: 300px; /* Set a fixed height */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    overflow: auto; /* Add scrollbars when content overflows */
+  }
+
+  li {
+    margin-bottom: 10px;
+  }

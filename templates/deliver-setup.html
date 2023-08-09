@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/deliver-setup.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="text-danger w-75 p-3">
+        <div class="container">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-bordered">
+                    <tr>
+                        <th scope="col" class="font-monospace">ID</th>
+                        <th scope="col" class="font-monospace">Name</th>
+                        <th scope="col" class="font-monospace">Price</th>
+                        <th scope="col" class="font-monospace">Search
+                            <form action="">
+                                <input type="text" name="item-name" id="item-name">
+                                <button type="submit" name="item-search" id="item-search">$</button>
+                            </form>
+                        </th>
+                    </tr>
+                    {% for menu in menu %}
+                    
+                        <tr>
+                            <td scope="row" class="font-monospace">{{ menu.id }}</td>
+                            <td scope="row" class="font-monospace">{{ menu.name }}</td>
+                            <td scope="row" class="font-monospace">${{ menu.price }}.00</td>
+                            <td scope="row" colspan="2" class="font-monospace">
+                                <form action="/addCart" method="POST">
+                                    <button type="submit" class="btn btn-outline-warning" name="add-cart" id="add-cart" value="{{ menu.id }}">Add to Cart</button>
+                                </form> 
+                            </td>
+                        </tr>
+                    {% endfor %}                                 
+                </table>
+            </div>
+        </div>
+        <div class="list-container">
+            <p>{{ total }}</p>
+            <ul>
+                {% for x in original_values %}
+                <li>{{ x.name }}, {{ x.price }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
