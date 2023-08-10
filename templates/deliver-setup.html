@@ -37,10 +37,18 @@
             </div>
         </div>
         <div class="list-container">
-            <p>{{ total }}</p>
+            <form action="/toCheckout" method="POST">
+                <p>
+                    Total Amount: $<i>{{ total }}</i>
+                    <button type="submit" name="checkout" id="checkout" value="{{ total }}" class="font-monospace btn btn-success btn-rounded btn-md">
+                        Proceed to Checkout
+                    </button>
+                </p>
+                
+            </form>
             <ul>
                 {% for x in original_values %}
-                <li>{{ x.name }}, {{ x.price }}</li>
+                <li>{{ x.name }}, ${{ x.price }}</li>
                 {% endfor %}
             </ul>
         </div>

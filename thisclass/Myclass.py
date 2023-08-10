@@ -1,6 +1,12 @@
 import sqlite3
 
-
+def checkIfInt(n):
+    try:
+        int_val = int(n)
+        print(int_val)
+        return True
+    except ValueError:
+        return False
 
 class EachData:
     def __init__(self, db):
@@ -67,9 +73,8 @@ class Cart:
     def getTotal(self):
         total = 0
         for i in self.list:
-            product = i[1]*i[2]
-            total += product
-
+            for j in i:
+                total += j.price
         return total
 
     def showList(self):
