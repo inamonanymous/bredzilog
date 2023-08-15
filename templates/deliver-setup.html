@@ -48,7 +48,12 @@
             </form>
             <ul>
                 {% for x in original_values %}
-                <li>{{ x.name }}, ${{ x.price }}</li>
+                <li>
+                    <form action="/deleteItem/{{ x.id }}" method="get">
+                        {{ x.name }}, ${{ x.price }}
+                        <button class="btn btn-danger btn-sm" type="submit" value="{{ x.id }}">Delete from Cart</button>
+                    </form>
+                </li>
                 {% endfor %}
             </ul>
         </div>
