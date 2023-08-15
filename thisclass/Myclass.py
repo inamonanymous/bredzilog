@@ -70,6 +70,18 @@ class Cart:
     def addItem(self, items):
         self.list.append([items])
 
+    def deleteItem(self, item_id):
+        isFound = False
+        for i in self.list:
+            for j in i:
+                if j.id == item_id:
+                    isFound = True
+                    self.list.remove(i)
+                    break
+            if isFound:
+                break
+        
+    
     def getTotal(self):
         total = 0
         for i in self.list:
@@ -79,4 +91,5 @@ class Cart:
 
     def showList(self):
         return self.list
+    
     
