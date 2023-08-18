@@ -1,0 +1,35 @@
+.custom-form {
+    margin-top: 1rem;
+    float: left;
+    margin-right: 20px;
+    margin-left: 40px;
+    max-width: 400px;
+    margin-bottom: 3rem;
+    color: white;
+}
+
+.custom-form .form-group {
+    display: grid;
+    grid-template-columns: max-content auto;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.custom-form label {
+    white-space: nowrap;
+}
+
+
+.custom-form .form-control {
+    width: 100%;
+    display: inline-block;
+    flex: 1; /* Fill remaining space */
+}
+
+h4 {
+    margin-left: 20px;
+    color: darkred;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: lighter;
+}

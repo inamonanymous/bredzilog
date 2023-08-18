@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block body %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/completed.css') }}">
+{% endblock %}
+
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Section</th>
+            </tr>
+            {% for cart in this_cart %}
+            <tr>
+                <td>{{ cart.name }}</td>
+                <td>{{ cart.price }}</td>
+                <td>{{ cart.type|capitalize }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <div class="animation-container cooking-animation text-center">
+        <img class="fire" src="{{ url_for('static', filename='img/fire.png') }}" alt="Fire">
+        <img class="skillet" src="{{ url_for('static', filename='img/cook.png') }}" alt="Skillet">
+    </div>
+
+    <div class="animation-container motorcycle-animation">
+        <img class="motorcycle" src="{{ url_for('static', filename='img/motorcycle.png') }}" alt="Motorcycle">
+    </div>
+
+    <script src="{{ url_for('static', filename='js/completed.js') }}"></script>
+
+    <div class="text-bg-info text-center">
+        <h3 class="display-6">
+            Your Food is Prepared to be Delivered! Thank You!
+        </h3>
+    </div>
+
+    
+
+{% endblock %}

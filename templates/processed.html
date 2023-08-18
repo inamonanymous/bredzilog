@@ -1,10 +1,43 @@
 {% extends "layout.html" %}
 {% block body %}
 
-<div class="position-absolute top-0 start-0 w-25 h-25 mt-5 ms-20 m-lg-5 rounded custom-div text-bg-success text-center">
-        {{ divString | safe }}
-    </div>
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/processsed.css') }}">
+{% endblock %}
 
-    
+    <div class="d-flex flex-column">
+        <div class="mb-3 rounded custom-div text-bg-success w-50 m-lg-2">
+            {{ divString | safe }}
+        </div>
+
+        <h4>Please Complete Remaining Fields to Continue</h4>
+
+        <div class="custom-form">
+            <form action="/completed" method="post">
+                <div class="form-group">
+                    <label for="brgy">Enter Barangay</label>
+                    <input type="text" class="form-control" name="brgy" id="inputBrgy" maxlength="50" required>
+                </div>
+                <div class="form-group">
+                    <label for="municipality">Enter Municipality</label>
+                    <input type="text" class="form-control" name="municipality" id="inputMunicipality" maxlength="50" required>
+                </div>
+                <div class="form-group">
+                    <label for="province">Enter Province</label>
+                    <input type="text" class="form-control" name="province" id="inputProvince" maxlength="50" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Enter Fullname</label>
+                    <input type="text" class="form-control" name="name" id="inputName" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Enter Contact Number</label>
+                    <input type="text" class="form-control" name="phone" id="inputPhone" pattern="[0-9]+" minlength="10" maxlength="15" required>
+                    
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
 
 {% endblock %}
