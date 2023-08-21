@@ -1,4 +1,10 @@
 import sqlite3
+from dotenv import load_dotenv
+import os
+from werkzeug.security import generate_password_hash, check_password_hash
+
+load_dotenv()
+DATABASE = os.getenv('DATABASE_URL')
 
 def checkIfInt(n):
     try:
@@ -72,6 +78,7 @@ class Cart:
 
     def deleteItem(self, item_id):
         isFound = False
+        #O(n*m)
         for i in self.list:
             for j in i:
                 if j.id == item_id:
@@ -91,5 +98,39 @@ class Cart:
 
     def showList(self):
         return self.list
-    
+
+
+class Admin:
+    def __init__(self, firstname, surname, email, phone, password):
+        self.firstname = firstname
+        self.surname = surname
+        self.email = email
+        self.phone = phone
+        self.password = generate_password_hash(password)
+
+    def save(self):
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute('INSERT INTO admin (name, surname, email, phoneNo, password) VALUES (?,?,?,?,?)',(self.firstname, self.surname, self.email, self.phone, self.password,))
+        conn.commit()
+        conn.close()
+
+    @staticmethod
+    def get_by_email(email):
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT * FROM admin WHERE email = ?', (email,))
+        row = cursor.fetchone()
+
+        conn.close()
+
+        if row:
+            admin = Admin(row[1], row[2], row[3], row[4], "")
+            admin.password = row[5]
+            return admin
+        return None
+
+
     

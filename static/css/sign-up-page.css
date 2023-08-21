@@ -1,0 +1,17 @@
+.pokwe {
+    background-image: url('img/bg-1.jpg');
+    background-size: cover;
+}
+.container {
+    max-width: 600px;
+    margin-top: 50px;
+    margin-left: 50px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.3); /* Adjust the alpha (transparency) value */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+/* Limit inputs to 35% width */
+.form-control {
+    width: 85%;
+}
