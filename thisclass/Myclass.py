@@ -15,8 +15,8 @@ def checkIfInt(n):
         return False
 
 class EachData:
-    def __init__(self, db):
-        self.db = db
+    def __init__(self):
+        self.db = DATABASE
         self.items = []
         self.fetch_from_db()
     
@@ -44,7 +44,7 @@ class EachData:
         return self.items
 
     def __repr__(self):
-        return f"{self.items[0]}, {self.items[1]}, {self.items[2]}, {self.items[3]} "
+        return ", ".join([str(item) for item in self.items])
 
 class Item:
     def __init__(self, id, name, price, type):
@@ -106,31 +106,59 @@ class Admin:
         self.surname = surname
         self.email = email
         self.phone = phone
-        self.password = generate_password_hash(password)
+        self.password = password
+    
+    def __repr__(self) -> str:
+        return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"    
+    
+class AdminData:
+    def __init__(self):
+        self.db = DATABASE
+        self.accounts = []
+        self.fetch_from_db()
 
-    def save(self):
-        conn = sqlite3.connect(DATABASE)
+    def create_object(self, i):
+        firstname, surname, email, phone, password = i
+        return Admin(firstname, surname, email, phone, password)
+    
+    def fetch_from_db(self):
+        connection = sqlite3.connect(self.db)
+        cursor = connection.cursor()
+        cursor.execute('SELECT name, surname, email, phoneNo, password FROM admin')
+        rows = cursor.fetchall()
+        for i in rows:
+            obj = self.create_object(i)
+            self.accounts.append(obj)
+        connection.close()
+
+    def loginIsTrue(self, email, password) -> bool:
+        admin = self.getByEmail(email)
+        if admin and check_password_hash(admin.password, password):
+            return True
+        return False
+
+
+    def save(self, admin):
+        conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
 
-        cursor.execute('INSERT INTO admin (name, surname, email, phoneNo, password) VALUES (?,?,?,?,?)',(self.firstname, self.surname, self.email, self.phone, self.password,))
+        cursor.execute('INSERT INTO admin (name, surname, email, phoneNo, password) VALUES (?,?,?,?,?)',(admin.firstname, admin.surname, admin.email, admin.phone, generate_password_hash(admin.password),))
         conn.commit()
         conn.close()
 
-    @staticmethod
-    def get_by_email(email):
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-
-        cursor.execute('SELECT * FROM admin WHERE email = ?', (email,))
-        row = cursor.fetchone()
-
-        conn.close()
-
-        if row:
-            admin = Admin(row[1], row[2], row[3], row[4], "")
-            admin.password = row[5]
-            return admin
+    def getByEmail(self, email):
+        for i in self.accounts:
+            if i.email==email:
+                admin = Admin(i.firstname, i.surname, i.email, i.phone, "")
+                admin.password = i.getPassword()
+                return admin
         return None
 
+    def checkIfExists(self, email):
+        for i in self.accounts:
+            if i.email == email:
+                return True
+            return False
 
-    
+    def __repr__(self):
+        return ", ".join([str(admin) for admin in self.accounts])

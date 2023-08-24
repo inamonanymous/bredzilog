@@ -8,7 +8,7 @@ user_bp = Blueprint('main', __name__)
 load_dotenv()
 DATABASE = os.getenv("DATABASE_URL")
 cart = pnt.Cart()
-menus = pnt.EachData(DATABASE)
+menus = pnt.EachData()
 
 
 @user_bp.route('/', methods=['POST', 'GET'])
@@ -21,11 +21,12 @@ def completed():
     for i in cart.showList():
         for j in i:
             this_cart.append(j)
+    session.clear()
     return render_template('completed.html', this_cart=this_cart)
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
-    session['divString'] = str()
+    
     input_field = request.form.get('processingField')
     isGcash = session.get('isGcash')
     if pnt.checkIfInt(input_field):
@@ -42,10 +43,7 @@ def processPayment():
             change = 0
             if money<total_price:
                 short=total_price-money
-                myString = f"<h2>You are ${ short } short. Please pay equal or higher than to total amount</h2>"
-                session['divString'] = myString
-                divString = session.get('divString', "")
-
+                divString = f"<h2>You are ${ short } short. Please pay equal or higher than to total amount</h2>"
                 return render_template('processed.html', money=money, total_price=total_price, divString=divString)
                 
             elif money==total_price:
@@ -55,12 +53,10 @@ def processPayment():
 
             session.clear()    
             change = money-total_price
-            myString = f"""<h1>THANK YOU FOR CHOOSING US</h1>
+            divString = f"""<h1>THANK YOU FOR CHOOSING US</h1>
                             <h5>Your Change is ${ change }</h5>
                             <h5>Expect this amount from the rider</h5>
                         """
-            session['divString'] = myString
-            divString = session.get('divString', "")
             return render_template('processed.html',divString=divString)
     
     return f"please enter a form of number, you entered: {input_field}"
