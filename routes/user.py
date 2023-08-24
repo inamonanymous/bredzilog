@@ -17,16 +17,34 @@ def index():
 
 @user_bp.route('/completed', methods=['POST', 'GET'])
 def completed():
+    baranggay, municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
+    
+
+    isGcash = session.get('isGcash')
     this_cart = []
+    if isGcash == 0:
+        
+        total_price = int(cart.getTotal() + 20)
+        money = session.get('money_from_cus')
+        change = money-total_price
+        for i in cart.showList():
+            for j in i:
+                this_cart.append(j)
+        session.clear()
+        
+        return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
+    this_cart = []
+    total_price = int(cart.getTotal() + 20)
+    money = "PAID WITHIN GCASH"
+    change = "PAID WITHIN GCASH"
     for i in cart.showList():
         for j in i:
             this_cart.append(j)
     session.clear()
-    return render_template('completed.html', this_cart=this_cart)
+    return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
-    
     input_field = request.form.get('processingField')
     isGcash = session.get('isGcash')
     if pnt.checkIfInt(input_field):
@@ -34,12 +52,13 @@ def processPayment():
             reference = str(input_field)
             if len(reference)!=13:
                 return "incorrect reference number"
-            session.clear()
+            
             divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
             return render_template('processed.html', divString=divString)
         elif isGcash==0:
-            total_price = session.get('totalPrice') + 20 # plus 20 for delivery fee
+            total_price = cart.getTotal() + 20 # plus 20 for delivery fee
             money = int(input_field)
+            session['money_from_cus'] = money
             change = 0
             if money<total_price:
                 short=total_price-money
@@ -48,10 +67,10 @@ def processPayment():
                 
             elif money==total_price:
                 divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
-                session.clear()
+                
                 return render_template('processed.html', divString=divString)
 
-            session.clear()    
+            
             change = money-total_price
             divString = f"""<h1>THANK YOU FOR CHOOSING US</h1>
                             <h5>Your Change is ${ change }</h5>
@@ -90,7 +109,7 @@ def formOfPayment():
 
 @user_bp.route('/toCheckout', methods=['POST', 'GET'])
 def toCheckout():
-    total_amount = session.get('totalPrice')
+    total_amount = cart.getTotal()
     plusDf = total_amount+20
     formString = session.get('formString', "")
     print(formString)
@@ -107,8 +126,7 @@ def deliverSetup():
     for i in my_cart:
         for j in i:
             original_values.append(j)
-    session['totalPrice'] = cart.getTotal()
-    total = session.get('totalPrice', "")
+    total = cart.getTotal()
     return render_template('deliver-setup.html', menu=menu, original_values=original_values, total=total), 200
 
 @user_bp.route('/deleteItem/<int:item_id>', methods=["GET"])

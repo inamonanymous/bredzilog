@@ -1,0 +1,10 @@
+body {
+    padding-top: 70px; /* To give space for the buttons */
+  }
+  #dashboard-container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px;
+    min-height: 400px; /* Adjust as needed */
+    width: 50%;
+  }

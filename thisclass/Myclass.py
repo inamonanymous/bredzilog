@@ -100,17 +100,6 @@ class Cart:
         return self.list
 
 
-class Admin:
-    def __init__(self, firstname, surname, email, phone, password):
-        self.firstname = firstname
-        self.surname = surname
-        self.email = email
-        self.phone = phone
-        self.password = password
-    
-    def __repr__(self) -> str:
-        return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"    
-    
 class AdminData:
     def __init__(self):
         self.db = DATABASE
@@ -150,7 +139,7 @@ class AdminData:
         for i in self.accounts:
             if i.email==email:
                 admin = Admin(i.firstname, i.surname, i.email, i.phone, "")
-                admin.password = i.getPassword()
+                admin.password = i.password
                 return admin
         return None
 
@@ -162,3 +151,30 @@ class AdminData:
 
     def __repr__(self):
         return ", ".join([str(admin) for admin in self.accounts])
+    
+
+class Admin:
+    def __init__(self, firstname, surname, email, phone, password):
+        self.firstname = firstname
+        self.surname = surname
+        self.email = email
+        self.phone = phone
+        self.password = password
+    
+    def __repr__(self) -> str:
+        return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"  
+    
+
+"""class Receipts:
+    def __init__(self, id, unique, name, phone, from_customer, referrenceNo):
+        self.db = DATABASE
+        self.id = id
+        self.unique = unique
+        self.name - name
+        self.phone = phone
+        self.from_customer = from_customer
+        self.referrenceNo = referrenceNo"""
+
+
+
+

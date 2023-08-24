@@ -14,8 +14,6 @@ def signedUp():
         password = request.form.get('password')
         password2 = request.form.get('confirmPassword')
 
-        
-
         if admin_data.checkIfExists(email):
             return "email already exists"
         elif password==password2:

@@ -70,3 +70,9 @@ tr:nth-child(odd) {
     z-index: 2; /* Place fire above skillet */
 }
 
+.container{
+    background-image: url('img/bg-1.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
