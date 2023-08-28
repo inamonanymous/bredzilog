@@ -18,8 +18,34 @@
       <!-- Dashboard content -->
       <div class="container" id="dashboard-container">
         <!-- Content will go here -->
+        <ul>
+          {% for i in receipts %}
+          <li>{{ i.unique }}</li>
+          {% endfor %}
+        </ul> 
       </div>
     
+      <script>
+        function updatePage() {
+            $.get('/admin/dashboard', function(data) {
+                // Parse the received HTML content to a jQuery object
+                var newContent = $(data);
+                
+                // Find the <ul> element in the new content
+                var newItems = newContent.find('ul');
+                
+                // Append the new <li> items to the existing <ul> element
+                $('#dashboard-container ul').append(newItems.html());
+            });
+        }
+    
+        // Update data every 5 seconds
+        setInterval(updatePage, 5000);
+    
+        // Initial data update
+        updatePage();
+    </script>
+
       <!-- Include Bootstrap JS and jQuery -->
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

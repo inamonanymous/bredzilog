@@ -1,7 +1,6 @@
 import sqlite3
 from dotenv import load_dotenv
 import os
-from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv()
 DATABASE = os.getenv('DATABASE_URL')
@@ -99,7 +98,7 @@ class Cart:
     def showList(self):
         return self.list
 
-
+from werkzeug.security import generate_password_hash, check_password_hash
 class AdminData:
     def __init__(self):
         self.db = DATABASE
@@ -131,7 +130,11 @@ class AdminData:
         conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
 
-        cursor.execute('INSERT INTO admin (name, surname, email, phoneNo, password) VALUES (?,?,?,?,?)',(admin.firstname, admin.surname, admin.email, admin.phone, generate_password_hash(admin.password),))
+        cursor.execute('INSERT INTO admin (name, surname, email, phoneNo, password) VALUES (?,?,?,?,?)',(admin.firstname, 
+                        admin.surname, 
+                        admin.email, 
+                        admin.phone, 
+                        generate_password_hash(admin.password),))
         conn.commit()
         conn.close()
 
@@ -164,17 +167,82 @@ class Admin:
     def __repr__(self) -> str:
         return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"  
     
+import uuid
+import random
+import time
 
-"""class Receipts:
-    def __init__(self, id, unique, name, phone, from_customer, referrenceNo):
+class ReceiptsData:
+    def __init__(self):
         self.db = DATABASE
-        self.id = id
+        self.transactions = []
+        self.fetch_from_database()
+
+    def create_object(self, i):
+        unique, name, address, phone, from_customer, referrenceNo, totalPrice = i
+        return Receipts(unique, name, address, phone, from_customer, referrenceNo, totalPrice)
+
+    def fetch_from_database(self) -> list:
+        conn = sqlite3.connect(self.db)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice FROM receipt')
+        rows = cursor.fetchall()
+
+        for i in rows:
+            obj = self.create_object(i)
+            self.transactions.append(obj)
+        conn.close()
+
+    @staticmethod
+    def generate_unique_id() -> str:
+        timestamp = int(time.time()*1000)
+        random_number = random.randint(0,999)
+        unique_id = uuid.uuid4().hex
+        final_id = f"{timestamp:013d}{random_number:03d}{unique_id[:9]}"
+
+        return final_id
+
+
+    def save_to_db(self, receipt):
+        conn = sqlite3.connect(self.db)
+        cursor = conn.cursor()
+        
+        cursor.execute('INSERT INTO receipt (unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice) VALUES (?,?,?,?,?,?,?)', 
+                       (receipt.unique,
+                       receipt.name,
+                       receipt.address,
+                       receipt.phone,
+                       receipt.from_customer,
+                       receipt.referrenceNo,
+                       receipt.price,))
+        conn.commit()
+        conn.close()
+
+
+class Receipts:
+    def __init__(self, unique, name, address, phone, from_customer, referrenceNo, price):
+        self.db = DATABASE
         self.unique = unique
-        self.name - name
+        self.name = name
+        self.address = address
         self.phone = phone
         self.from_customer = from_customer
-        self.referrenceNo = referrenceNo"""
+        self.referrenceNo = referrenceNo
+        self.price = price
 
+    
+
+    def __repr__(self):
+        return f"""
+                {self.unique},
+                {self.name},
+                {self.address},
+                {self.phone},
+                {self.from_customer},
+                {self.referrenceNo},
+                {self.price}
+                """
+        
 
 
 

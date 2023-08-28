@@ -18,15 +18,19 @@ def index():
 @user_bp.route('/completed', methods=['POST', 'GET'])
 def completed():
     baranggay, municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
+    address = f"Brgy: {baranggay}, Municipality: {municipality}, Province: {province}"
     
-
     isGcash = session.get('isGcash')
     this_cart = []
     if isGcash == 0:
-        
-        total_price = int(cart.getTotal() + 20)
+        receipt_data = pnt.ReceiptsData()
         money = session.get('money_from_cus')
+        total_price = int(cart.getTotal() + 20)
         change = money-total_price
+        unique = pnt.ReceiptsData.generate_unique_id()
+        receipt = pnt.Receipts(unique, name, address, phoneNo, money, str(), total_price)
+        receipt_data.save_to_db(receipt)
+
         for i in cart.showList():
             for j in i:
                 this_cart.append(j)

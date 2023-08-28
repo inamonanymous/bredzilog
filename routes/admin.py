@@ -37,7 +37,11 @@ def logout():
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
     if 'email' in session:
-        return render_template('admin-dashboard.html')
+        try:
+            receipt_data = pnt.ReceiptsData()
+            return render_template('admin-dashboard.html', receipts=receipt_data.transactions)
+        except TypeError:
+            return "render_template('admin-dashboard.html', receipts=list)"
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/signedin', methods=['POST', 'GET'])
