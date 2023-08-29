@@ -3,31 +3,6 @@ import thisclass.Myclass as pnt
 
 admin_bp = Blueprint('admin', __name__)
 
-@admin_bp.route('/admin/signedUp', methods=['POST'])
-def signedUp():
-    admin_data = pnt.AdminData()
-    if request.method == 'POST':
-        firstname = request.form.get('firstName')
-        surname = request.form.get('surname')
-        email = request.form.get('email')
-        phone = request.form.get('number')
-        password = request.form.get('password')
-        password2 = request.form.get('confirmPassword')
-
-        if admin_data.checkIfExists(email):
-            return "email already exists"
-        elif password==password2:
-            new_admin = pnt.Admin(firstname, surname, email, phone, password)
-            admin_data.save(new_admin)
-            return redirect(url_for('admin.adminPage'))
-
-        return render_template('sign-up-page.html')
-        
-    return render_template('sign-up-page.html')
-
-@admin_bp.route('/admin/signUpPage', methods=['POST', 'GET'])
-def signUpPage():
-    return render_template('sign-up-page.html')
 
 @admin_bp.route('/admin/logout', methods=['POST', 'GET'])
 def logout():
@@ -62,3 +37,29 @@ def signedin():
 @admin_bp.route('/admin/adminPage', methods=['POST', 'GET'])
 def adminPage():
     return render_template("admin-page.html")
+
+@admin_bp.route('/admin/signedUp', methods=['POST'])
+def signedUp():
+    admin_data = pnt.AdminData()
+    if request.method == 'POST':
+        firstname = request.form.get('firstName')
+        surname = request.form.get('surname')
+        email = request.form.get('email')
+        phone = request.form.get('number')
+        password = request.form.get('password')
+        password2 = request.form.get('confirmPassword')
+
+        if admin_data.checkIfExists(email):
+            return "email already exists"
+        elif password==password2:
+            new_admin = pnt.Admin(firstname, surname, email, phone, password)
+            admin_data.save(new_admin)
+            return redirect(url_for('admin.adminPage'))
+
+        return render_template('sign-up-page.html')
+        
+    return render_template('sign-up-page.html')
+
+@admin_bp.route('/admin/signUpPage', methods=['POST', 'GET'])
+def signUpPage():
+    return render_template('sign-up-page.html')

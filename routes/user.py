@@ -1,4 +1,4 @@
-from flask import render_template, render_template_string, request, url_for, redirect, session, Blueprint
+from flask import render_template, render_template_string, request, url_for, redirect, session, Blueprint, make_response
 import thisclass.Myclass as pnt
 import os
 from dotenv import load_dotenv
@@ -19,7 +19,6 @@ def index():
 def completed():
     baranggay, municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
     address = f"Brgy: {baranggay}, Municipality: {municipality}, Province: {province}"
-    
     isGcash = session.get('isGcash')
     this_cart = []
     if isGcash == 0:
@@ -34,7 +33,7 @@ def completed():
         for i in cart.showList():
             for j in i:
                 this_cart.append(j)
-        session.clear()
+        clearAllSession()
         
         return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
     this_cart = []
@@ -44,13 +43,14 @@ def completed():
     for i in cart.showList():
         for j in i:
             this_cart.append(j)
-    session.clear()
+    clearAllSession()
     return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
     input_field = request.form.get('processingField')
     isGcash = session.get('isGcash')
+    nameuser = session.get('nameuser', "")
     if pnt.checkIfInt(input_field):
         if isGcash==1:
             reference = str(input_field)
@@ -58,7 +58,7 @@ def processPayment():
                 return "incorrect reference number"
             
             divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
-            return render_template('processed.html', divString=divString)
+            return render_template('processed.html', divString=divString, nameuser=nameuser)
         elif isGcash==0:
             total_price = cart.getTotal() + 20 # plus 20 for delivery fee
             money = int(input_field)
@@ -67,12 +67,12 @@ def processPayment():
             if money<total_price:
                 short=total_price-money
                 divString = f"<h2>You are ${ short } short. Please pay equal or higher than to total amount</h2>"
-                return render_template('processed.html', money=money, total_price=total_price, divString=divString)
+                return render_template('processed.html', money=money, total_price=total_price, divString=divString, nameuser=nameuser)
                 
             elif money==total_price:
                 divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
                 
-                return render_template('processed.html', divString=divString)
+                return render_template('processed.html', divString=divString, nameuser=nameuser)
 
             
             change = money-total_price
@@ -80,7 +80,7 @@ def processPayment():
                             <h5>Your Change is ${ change }</h5>
                             <h5>Expect this amount from the rider</h5>
                         """
-            return render_template('processed.html',divString=divString)
+            return render_template('processed.html',divString=divString, nameuser=nameuser)
     
     return f"please enter a form of number, you entered: {input_field}"
 
@@ -124,6 +124,7 @@ def toCheckout():
 
 @user_bp.route('/deliverSetup', methods=['POST', 'GET'])
 def deliverSetup():
+    
     menu = menus.items
     my_cart = cart.showList()
     original_values = []
@@ -157,15 +158,33 @@ def addCart():
 
 @user_bp.route('/userPage', methods=['POST', 'GET'])
 def userPage():
-    return render_template("user-page.html") 
+    user_option_str = str()
+    user_option_str1 = """<form action="/userPage" method="post"> 
+                        <input type="text" name="nameuser" id="nameuser">
+                        <button class="btn btn-danger mt-2" type="submit">Enter</button>
+                        </form>
+                      """
+    nameuser = request.form.get('nameuser')
+    if nameuser is not None:
+        if len(nameuser) > 1:
+            session['nameuser'] = nameuser
+            user_option_str = f"""
+                            <h3> Hello {nameuser}
+                            <a href="/tableReservation">
+                                        <button class="btn btn-danger mt-2" style="margin-left: 20px;" name="admin">Table Reservation</button>
+                                    </a>
+                                    <a href="/deliverSetup">
+                                        <button class="btn btn-danger mt-2" style="margin-left: 20px;" name="admin">Deliver Food</button>
+                                    </a>
+                            """
+            
+            return render_template("user-page.html", user_option_str=user_option_str)
+        return "Enter valid name" 
+    return render_template("user-page.html", user_option_str1=user_option_str1)
 
-@user_bp.route('/option', methods=['POST', 'GET'])
-def user():
-    if request.method == 'POST':
-        if request.form.get('user'):
-            return "user"
-        elif request.form.get('admin'):
-            return "admin"
-    elif request.method == 'GET':
-        return "get"
-    return "something wrong"
+
+def clearAllSession():
+    session.pop('formString', None)
+    session.pop('isGcash', None) 
+    session.pop('money_from_cus', None)
+    session.pop('nameuser', None)
