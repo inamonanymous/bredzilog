@@ -21,8 +21,8 @@ def completed():
     address = f"Brgy: {baranggay}, Municipality: {municipality}, Province: {province}"
     isGcash = session.get('isGcash')
     this_cart = []
+    receipt_data = pnt.ReceiptsData()
     if isGcash == 0:
-        receipt_data = pnt.ReceiptsData()
         money = session.get('money_from_cus')
         total_price = int(cart.getTotal() + 20)
         change = money-total_price
@@ -40,6 +40,11 @@ def completed():
     total_price = int(cart.getTotal() + 20)
     money = "PAID WITHIN GCASH"
     change = "PAID WITHIN GCASH"
+    referenceNo = session.get('referenceNo')
+    unique = pnt.ReceiptsData.generate_unique_id()
+    receipt = pnt.Receipts(unique, name, address, phoneNo, int(), referenceNo, total_price)
+    receipt_data.save_to_db(receipt)
+
     for i in cart.showList():
         for j in i:
             this_cart.append(j)
@@ -56,7 +61,7 @@ def processPayment():
             reference = str(input_field)
             if len(reference)!=13:
                 return "incorrect reference number"
-            
+            session['referenceNo'] = reference
             divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
             return render_template('processed.html', divString=divString, nameuser=nameuser)
         elif isGcash==0:

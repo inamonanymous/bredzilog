@@ -6,7 +6,7 @@ admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.route('/admin/logout', methods=['POST', 'GET'])
 def logout():
-    session.clear()
+    session.pop('email', None)
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
