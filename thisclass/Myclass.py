@@ -167,10 +167,36 @@ class Admin:
     def __repr__(self) -> str:
         return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"  
     
+
+
+
+class User: 
+    def __init__(self):
+        self.name = str
+        self.email = str
+        self.password = str
+        self.address = str
+        self.phoneNo = str
+
+    def get_name(self, name):
+        self.name = name
+        
+    def get_email(self, email):
+        self.email = email
+
+    def get_email(self, password):
+        self.password = password
+    
+    def get_email(self, address):
+        self.address = address
+
+    def get_email(self, phoneNo):
+        self.phoneNo = phoneNo
+    
+
 import uuid
 import random
 import time
-
 class ReceiptsData:
     def __init__(self):
         self.db = DATABASE

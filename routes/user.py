@@ -161,6 +161,31 @@ def addCart():
     
     return redirect(url_for('main.deliverSetup'))
 
+"""def signedUp():
+    admin_data = pnt.AdminData()
+    if request.method == 'POST':
+        firstname = request.form.get('firstName')
+        surname = request.form.get('surname')
+        email = request.form.get('email')
+        phone = request.form.get('number')
+        password = request.form.get('password')
+        password2 = request.form.get('confirmPassword')
+
+        if admin_data.checkIfExists(email):
+            return "email already exists"
+        elif password==password2:
+            new_admin = pnt.Admin(firstname, surname, email, phone, password)
+            admin_data.save(new_admin)
+            return redirect(url_for('admin.adminPage'))
+
+        return render_template('sign-up-page.html')
+        
+    return render_template('sign-up-page.html')"""
+
+@user_bp.route('/signUpPage', methods=['POST', 'GET'])
+def signUpPage():
+    return render_template('sign-up-page.html')
+
 @user_bp.route('/userPage', methods=['POST', 'GET'])
 def userPage():
     user_option_str = str()
@@ -182,7 +207,6 @@ def userPage():
                                         <button class="btn btn-danger mt-2" style="margin-left: 20px;" name="admin">Deliver Food</button>
                                     </a>
                             """
-            
             return render_template("user-page.html", user_option_str=user_option_str)
         return "Enter valid name" 
     return render_template("user-page.html", user_option_str1=user_option_str1)

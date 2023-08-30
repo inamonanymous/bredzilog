@@ -38,7 +38,7 @@ def signedin():
 def adminPage():
     return render_template("admin-page.html")
 
-@admin_bp.route('/admin/signedUp', methods=['POST'])
+"""@admin_bp.route('/admin/signedUp', methods=['POST'])
 def signedUp():
     admin_data = pnt.AdminData()
     if request.method == 'POST':
@@ -58,8 +58,8 @@ def signedUp():
 
         return render_template('sign-up-page.html')
         
-    return render_template('sign-up-page.html')
+    return render_template('sign-up-page.html')"""
 
-@admin_bp.route('/admin/signUpPage', methods=['POST', 'GET'])
+"""@admin_bp.route('/admin/signUpPage', methods=['POST', 'GET'])
 def signUpPage():
-    return render_template('sign-up-page.html')
+    return render_template('sign-up-page.html')"""
