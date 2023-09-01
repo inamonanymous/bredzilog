@@ -1,23 +1,23 @@
 {% extends "layout.html" %}
 {% block body %}
 
+  <form action="/userPage" method="post">
+    <button class="btn btn-info mt-2" type="submit" value="1" name="signIn">Sign in</button>
+  </form>
+
   <div>
-    {{ user_option_str1 | safe }}
+    {{ user_option_str | safe }}
   </div>
 
-  <div class="">
-    {{ user_option_str | safe}}
-    </div>
-
-    <div>
-      <a href="{{ url_for('main.signUpPage') }}" style="text-decoration: none;">
-        <h6 class="h6 text-light view overlay">Or Create an Account and claim you free 
-          <i>
-            "Afford Mo Zilog Ko"
-          </i>
-           Meal!
-        </h6>
-      </a>
-    </div>
+  <div>
+    <a href="{{ url_for('main.signUpPage') }}" style="text-decoration: none;">
+      <h6 class="h6 text-light view overlay">Or Create an Account and claim you free 
+        <i>
+          "Afford Mo Zilog Ko"
+        </i>
+         Meal!
+      </h6>
+    </a>
+  </div>
     
 {% endblock %}

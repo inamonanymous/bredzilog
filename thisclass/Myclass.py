@@ -127,16 +127,20 @@ class AdminData:
 
 
     def save(self, admin):
-        conn = sqlite3.connect(self.db)
-        cursor = conn.cursor()
+        try:
+            conn = sqlite3.connect(self.db)
+            cursor = conn.cursor()
 
-        cursor.execute('INSERT INTO admin (name, surname, email, phoneNo, password) VALUES (?,?,?,?,?)',(admin.firstname, 
-                        admin.surname, 
-                        admin.email, 
-                        admin.phone, 
-                        generate_password_hash(admin.password),))
-        conn.commit()
-        conn.close()
+            cursor.execute('INSERT INTO admin (name, surname, email, phoneNo, password) VALUES (?,?,?,?,?)',
+                        (admin.firstname, 
+                            admin.surname, 
+                            admin.email, 
+                            admin.phone, 
+                            generate_password_hash(admin.password),))
+            conn.commit()
+            conn.close()
+        except:
+            print("error saving to database")
 
     def getByEmail(self, email):
         for i in self.accounts:
@@ -168,30 +172,82 @@ class Admin:
         return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"  
     
 
+class UserData:
+    def __init__(self):
+        self.db = DATABASE
+        self.accounts = []
+        self.fetch_from_db()
+        
 
+    def create_object(self, i):
+        firstname, surname, email, phone, password = i
+        return User(firstname, surname, email, phone, password)
+
+
+    def fetch_from_db(self):
+        connection = sqlite3.connect(self.db)
+        cursor = connection.cursor()
+        rows = cursor.fetchall()
+        for i in rows:
+            obj = self.create_object(i)
+            self.accounts.append(obj)
+        connection.close()
+
+    def save(self, user):
+        try:
+            conn = sqlite3.connect(self.db)
+            cursor = conn.cursor()
+
+            cursor.execute('INSERT INTO users (name, surname, email, phone, password) VALUES (?,?,?,?,?)', 
+                        (user.firstname,
+                            user.surname,
+                            user.email,
+                            user.phone,
+                            generate_password_hash(user.password),))
+            
+            conn.commit()
+            conn.close()
+        except:
+            print("error saving to database")
+
+    def loginIsTrue(self, email, password) -> bool:
+        user = self.getByEmail(email)
+        if user and check_password_hash(user.password, password):
+            return True
+        return False
+    
+    def getByEmail(self, email):
+        for i in self.accounts:
+            if i.email==email:
+                user = User(i.firstname, i.surname, i.email, i.phone, "")
+                user.password = i.password
+                return user
+        return None    
+
+    def checkIfExists(self, email):
+        for i in self.accounts:
+            if i.email == email:
+                return True
+            return False
+        
+    def __repr__(self):
+        return ", ".join([str(user) for user in self.accounts])
 
 class User: 
-    def __init__(self):
-        self.name = str
-        self.email = str
-        self.password = str
-        self.address = str
-        self.phoneNo = str
-
-    def get_name(self, name):
-        self.name = name
-        
-    def get_email(self, email):
+    def __init__(self, firstname, surname, email, phone, password):
+        self.firstname = firstname
+        self.surname = surname
         self.email = email
-
-    def get_email(self, password):
+        self.phone = phone
         self.password = password
-    
-    def get_email(self, address):
+        self.address = str
+        self.photo = None
+
+    def set_address(self, address):
         self.address = address
 
-    def get_email(self, phoneNo):
-        self.phoneNo = phoneNo
+    def set_photo(self, photo):
+        self.photo = photo
     
 
 import uuid

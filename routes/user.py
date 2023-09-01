@@ -9,7 +9,7 @@ load_dotenv()
 DATABASE = os.getenv("DATABASE_URL")
 cart = pnt.Cart()
 menus = pnt.EachData()
-
+user_data = pnt.UserData()
 
 @user_bp.route('/', methods=['POST', 'GET'])
 def index():
@@ -17,8 +17,8 @@ def index():
 
 @user_bp.route('/completed', methods=['POST', 'GET'])
 def completed():
-    baranggay, municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
-    address = f"Brgy: {baranggay}, Municipality: {municipality}, Province: {province}"
+    baranggay,street, houseNo , municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
+    address = f"Brgy: {baranggay}, Street: {street}, House Number: {houseNo}, Municipality: {municipality}, Province: {province}"
     isGcash = session.get('isGcash')
     this_cart = []
     receipt_data = pnt.ReceiptsData()
@@ -95,22 +95,13 @@ def formOfPayment():
     if 'cash-on-del' in request.form:
         session["isGcash"] = 0
         formString = """
-            <form action="/processPayment" method="post">
-                <!-- Cash-on-Delivery form fields -->
-                <input type="number" name="processingField" placeholder="Enter cash amount" class="form-control" style="max-width: 200px" required>
-                <input type="submit" value="Submit Cash" name="fromCash" class="font-monospace btn btn-success btn-rounded btn-md mt-3">
-            </form>
-        """
+                        <form action="/processPayment" method="post"><!-- Cash-on-Delivery form fields --><input type="number" name="processingField" placeholder="Enter cash amount" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit Cash" name="fromCash" class="font-monospace btn btn-success btn-rounded btn-md mt-3"></form>
+                     """
     elif 'g-cash' in request.form:
         session["isGcash"] = 1
         formString = """
-            <img src="../static/img/g-cash.jpg" alt="Girl in a jacket" width="230" height="225">
-            <form action="/processPayment" method="post" style="margin-top: 10px">
-                <!-- G-Cash form fields -->
-                <input type="number" name="processingField" placeholder="Enter Reference Number" class="form-control" style="max-width: 200px" required>
-                <input type="submit" value="Submit G-Cash" name="fromGcash" class="font-monospace btn btn-primary btn-rounded btn-md mt-3">
-            </form>
-        """
+                        <img src="../static/img/g-cash.jpg" alt="Admin's G-Cash QR" width="230" height="225"><form action="/processPayment" method="post" style="margin-top: 10px"><!-- G-Cash form fields --><input type="number" name="processingField" placeholder="Enter Reference Number" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit G-Cash" name="fromGcash" class="font-monospace btn btn-primary btn-rounded btn-md mt-3"></form>
+                     """
     if formString:
         session['formString'] = formString
         
@@ -121,7 +112,6 @@ def toCheckout():
     total_amount = cart.getTotal()
     plusDf = total_amount+20
     formString = session.get('formString', "")
-    print(formString)
     if total_amount==0:
         return redirect(url_for('main.deliverSetup'))
     
@@ -161,8 +151,9 @@ def addCart():
     
     return redirect(url_for('main.deliverSetup'))
 
-"""def signedUp():
-    admin_data = pnt.AdminData()
+@user_bp.route('/signedUp', methods=['POST', 'GET'])
+def signedUp():
+    user_data = pnt.UserData()
     if request.method == 'POST':
         firstname = request.form.get('firstName')
         surname = request.form.get('surname')
@@ -171,28 +162,43 @@ def addCart():
         password = request.form.get('password')
         password2 = request.form.get('confirmPassword')
 
-        if admin_data.checkIfExists(email):
+        if user_data.checkIfExists(email):
             return "email already exists"
         elif password==password2:
-            new_admin = pnt.Admin(firstname, surname, email, phone, password)
-            admin_data.save(new_admin)
-            return redirect(url_for('admin.adminPage'))
+            newUser = pnt.User(firstname, surname, email, phone, password)
+            user_data.save(newUser)
+            return render_template('user-signin.html')
 
         return render_template('sign-up-page.html')
         
-    return render_template('sign-up-page.html')"""
+    return render_template('sign-up-page.html')
 
 @user_bp.route('/signUpPage', methods=['POST', 'GET'])
 def signUpPage():
     return render_template('sign-up-page.html')
 
+@user_bp.route('/signedin', methods=['POST', 'GET'])
+def signedin():
+    email, password = request.form.get('user-email'), request.form.get('user-password')
+    
+    if request.method == "POST":
+        if user_data.loginIsTrue(email, password):
+            session['user-email'] = email
+            user =  user_data.getByEmail(email)
+            session['nameuser'] = user.name
+            return render_template('user-dashboard.html')
+        else:
+            return "wrong"
+    return redirect(url_for('main.userPage'))    
+    
+
 @user_bp.route('/userPage', methods=['POST', 'GET'])
 def userPage():
-    user_option_str = str()
-    user_option_str1 = """<form action="/userPage" method="post"> 
-                        <input type="text" name="nameuser" id="nameuser">
-                        <button class="btn btn-danger mt-2" type="submit">Enter</button>
-                        </form>
+    if request.form.get('signIn'):
+        return render_template('user-signin.html')
+
+    user_option_str = """
+                        <form action="/userPage" method="post"> <input type="text" name="nameuser" id="nameuser"><button class="btn btn-danger mt-2" type="submit">Enter</button></form>
                       """
     nameuser = request.form.get('nameuser')
     if nameuser is not None:
@@ -209,7 +215,7 @@ def userPage():
                             """
             return render_template("user-page.html", user_option_str=user_option_str)
         return "Enter valid name" 
-    return render_template("user-page.html", user_option_str1=user_option_str1)
+    return render_template("user-page.html", user_option_str=user_option_str)
 
 
 def clearAllSession():

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import thisclass.Myclass as pnt
 
 admin_bp = Blueprint('admin', __name__)
-
+admin_data = pnt.AdminData()
 
 @admin_bp.route('/admin/logout', methods=['POST', 'GET'])
 def logout():
@@ -21,7 +21,7 @@ def dashboard():
 
 @admin_bp.route('/admin/signedin', methods=['POST', 'GET'])
 def signedin():
-    admin_data = pnt.AdminData()
+    
     email = request.form.get('email')
     password = request.form.get('password')
     print(admin_data.accounts)
