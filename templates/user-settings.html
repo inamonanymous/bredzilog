@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div>
+        <form action="/updateSettings" method="post">
+            <fieldset>
+              <legend>User Information</legend>
+              <p class="lead "><b>Account Email:</b> <i>{{ user_login.email }}</i></b></p>
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" value="{{ user_login.firstname }} {{ user_login.surname }}">
+              <br>
+              
+              <label for="phone">Phone:</label>
+              <input type="phone" id="phone" name="phone" value="{{ user_login.phone }}">
+              
+              <!-- Additional form fields for contact information -->
+            </fieldset>
+            
+            <fieldset>
+              <legend>Add Shipping Address</legend>
+              <label for="brgy">Baranggay:</label>
+              <input type="text" id="brgy" name="brgy">
+
+              <label for="street">Street:</label>
+              <input type="text" id="street" name="street">
+              <br>
+
+              <label for="houseNo">House No:</label>
+              <input type="text" id="houseNo" name="houseNo">
+
+              <label for="municipality">Municipality:</label>
+              <input type="text" id="municipality" name="municipality">
+
+              <label for="province">Province/City:</label>
+              <input type="text" id="province" name="province">
+              
+              
+
+              <!-- Additional form fields for shipping address -->
+            </fieldset>
+            
+            <input type="submit" value="Submit">
+          </form>
+    </div>
+{% endblock %}

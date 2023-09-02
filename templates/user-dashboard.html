@@ -1,3 +1,19 @@
 {% extends "layout.html" %}
 {% block body %}
+
+    <h3> Hello {{nameuser}}
+    <a href="{{ url_for('main.userPage') }}">
+        <button class="btn btn-danger mt-2" style="margin-left: 20px;" name="admin">Table Reservation</button>
+    </a>
+    <a href="{{ url_for('main.deliverSetup') }}">
+        <button class="btn btn-danger mt-2" style="margin-left: 20px;" name="admin">Deliver Food</button>
+    </a>
+    {% if user_login and email is string and email != '' %}
+    <a href="{{ url_for('main.userSettings') }}">
+        <button class="btn btn-secondary mt-2" style="margin-left: 20px;" name="admin">Settings</button>
+    </a>
+    {% else %}
+        <p>Please log in to access the content.</p>
+    {% endif %}
+
 {% endblock %}

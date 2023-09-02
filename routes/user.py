@@ -9,7 +9,7 @@ load_dotenv()
 DATABASE = os.getenv("DATABASE_URL")
 cart = pnt.Cart()
 menus = pnt.EachData()
-user_data = pnt.UserData()
+g_user_data = pnt.UserData()
 
 @user_bp.route('/', methods=['POST', 'GET'])
 def index():
@@ -153,7 +153,7 @@ def addCart():
 
 @user_bp.route('/signedUp', methods=['POST', 'GET'])
 def signedUp():
-    user_data = pnt.UserData()
+    
     if request.method == 'POST':
         firstname = request.form.get('firstName')
         surname = request.form.get('surname')
@@ -162,11 +162,11 @@ def signedUp():
         password = request.form.get('password')
         password2 = request.form.get('confirmPassword')
 
-        if user_data.checkIfExists(email):
+        if g_user_data.checkIfExists(email):
             return "email already exists"
         elif password==password2:
             newUser = pnt.User(firstname, surname, email, phone, password)
-            user_data.save(newUser)
+            g_user_data.save(newUser)
             return render_template('user-signin.html')
 
         return render_template('sign-up-page.html')
@@ -177,20 +177,56 @@ def signedUp():
 def signUpPage():
     return render_template('sign-up-page.html')
 
+    
+
+
+@user_bp.route('/updateSettings', methods=['POST', 'GET'])
+def updateSettings():
+    brgy, street, houseNo, municipality, province = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province')
+    if request.method == "POST":
+        user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
+        if user_login is not None and 'user-email' in session:
+            user_login.set_address(brgy, street, houseNo, municipality, province)
+            g_user_data.saveAddress(user_login)
+            
+            return redirect(url_for('main.userDashboard'))
+        print(f"prob1{user_login}")
+        print("prob1"+str(session.get('user-email', "")))
+        return redirect(url_for('main.userSettings'))
+    print(f"prob2{user_login}")
+    print("prob2"+str(session.get('user-email', "")))
+    return redirect(url_for('main.userSettings'))
+
+@user_bp.route('/userSettings', methods=['POST', 'GET'])
+def userSettings():
+    user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
+    if user_login is not None and 'user-email' in session:
+        return render_template('user-settings.html', user_login=user_login)
+    return redirect(url_for('main.userPage'))
+
+@user_bp.route('/userDashboard', methods=['POST', 'GET'])
+def userDashboard():
+    if 'user-email' in session:
+        user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
+        return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.email)
+    return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.email)
+
 @user_bp.route('/signedin', methods=['POST', 'GET'])
 def signedin():
     email, password = request.form.get('user-email'), request.form.get('user-password')
     
     if request.method == "POST":
-        if user_data.loginIsTrue(email, password):
+        if g_user_data.loginIsTrue(email, password):
+            g_user_login =  g_user_data.getByEmail(email)
+            if g_user_login is None:
+                session.pop('user-email', None)
+                return "session expired"
             session['user-email'] = email
-            user =  user_data.getByEmail(email)
-            session['nameuser'] = user.name
-            return render_template('user-dashboard.html')
+            session['nameuser'] = f"{g_user_login.firstname}, {g_user_login.surname}"
+            return redirect(url_for('main.userDashboard'))
         else:
-            return "wrong"
-    return redirect(url_for('main.userPage'))    
-    
+            return f"invalid username or password"
+    return redirect(url_for('main.userPage'))
 
 @user_bp.route('/userPage', methods=['POST', 'GET'])
 def userPage():

@@ -5,6 +5,9 @@ import os
 load_dotenv()
 DATABASE = os.getenv('DATABASE_URL')
 
+"""
+    return true if input is int
+"""
 def checkIfInt(n):
     try:
         int_val = int(n)
@@ -13,16 +16,32 @@ def checkIfInt(n):
     except ValueError:
         return False
 
+
+"""
+    Each Data from DATABASE `menus` TABLE instantiated `Item`
+      object TO `EachData.items` LIST attribute
+"""
 class EachData:
     def __init__(self):
         self.db = DATABASE
         self.items = []
         self.fetch_from_db()
     
+    """
+        Unpack values from `i` and make those values
+        as arguments creating an instance of
+        `Item` class
+    """
     def create_object(self, i):
         id, name, price, type = i
         return Item(id, name, price, type)
 
+    """
+        Fetch all data from `menus` TABLE in DATABASE
+        and for each row use `create_object(i)` function
+        to return each instance of `Item's` class using
+        `menus` columns for each argument.
+    """
     def fetch_from_db(self):
         connection = sqlite3.connect(self.db)
         cursor = connection.cursor()
@@ -33,18 +52,39 @@ class EachData:
             self.items.append(obj)
         connection.close()
 
+    """
+        Return `Item` object attributes: 
+        ('name',
+        'price',
+        'type')
+         based from what id is received 
+    """
     def get_obj_by_id(self, id):
         for i in self.items:
             if i.id == id:
                 return i.name, i.price, i.type
         return None, None, None
     
+    """
+        return `items` attribute that
+        contains `Item` class instance that 
+        fetched from database
+    """
     def getList(self):
         return self.items
 
+
+    """
+        String representation of this object.
+    """
     def __repr__(self):
         return ", ".join([str(item) for item in self.items])
 
+
+"""
+    `Items` class that almost always rely
+      to `EachData` class 
+"""
 class Item:
     def __init__(self, id, name, price, type):
         self.id = id
@@ -167,6 +207,7 @@ class Admin:
         self.email = email
         self.phone = phone
         self.password = password
+        
     
     def __repr__(self) -> str:
         return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"  
@@ -187,7 +228,7 @@ class UserData:
     def fetch_from_db(self):
         connection = sqlite3.connect(self.db)
         cursor = connection.cursor()
-        rows = cursor.fetchall()
+        rows = cursor.execute('SELECT name, surname, email, phone, password FROM users')
         for i in rows:
             obj = self.create_object(i)
             self.accounts.append(obj)
@@ -209,6 +250,20 @@ class UserData:
             conn.close()
         except:
             print("error saving to database")
+
+    """
+        bug
+    """#############################################################################
+    def saveAddress(self, user):
+        
+            conn = sqlite3.connect(self.db)
+            cursor = conn.cursor()
+            cursor.execute('INSERT INTO users (address) VALUES (?)', (user.address))
+            
+            conn.commit()
+            conn.close()
+        #############################################################################
+        
 
     def loginIsTrue(self, email, password) -> bool:
         user = self.getByEmail(email)
@@ -240,11 +295,21 @@ class User:
         self.email = email
         self.phone = phone
         self.password = password
-        self.address = str
+        self.address = {'brgy': None, 
+                        'street': None,
+                        'houseNo': None,
+                        'municipality': None,
+                        'province': None
+                        }
         self.photo = None
 
-    def set_address(self, address):
-        self.address = address
+    def set_address(self, brgy, street, houseNo, municipality, province):
+        self.address = {'brgy': str(brgy),
+                        'street': str(street),
+                        'houseNo': str(houseNo),
+                        'municipality': str(municipality),
+                        'province': str(province)
+                        }
 
     def set_photo(self, photo):
         self.photo = photo
@@ -267,7 +332,7 @@ class ReceiptsData:
         conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
 
-        cursor.execute('SELECT unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice FROM receipt')
+        cursor.execute('SELECT unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice FROM receipt ORDER BY id DESC')
         rows = cursor.fetchall()
 
         for i in rows:

@@ -2,7 +2,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import thisclass.Myclass as pnt
 
 admin_bp = Blueprint('admin', __name__)
-admin_data = pnt.AdminData()
+g_admin_data = pnt.AdminData()
+g_admin_login = None
+
 
 @admin_bp.route('/admin/logout', methods=['POST', 'GET'])
 def logout():
@@ -24,14 +26,19 @@ def signedin():
     
     email = request.form.get('email')
     password = request.form.get('password')
-    print(admin_data.accounts)
+    print(g_admin_data.accounts)
 
     if request.method == "POST":
-        if admin_data.loginIsTrue(email, password):
-            session["email"] = email
+        if g_admin_data.loginIsTrue(email, password):
+            g_admin_login = g_admin_data.getByEmail(email)
+            if g_admin_login is None:
+                session.pop('email', None)
+                return "session expired"
+            session["email"] = g_admin_login.email
+            print(session.get('email'))
             return redirect(url_for('admin.dashboard'))
         else: 
-            return f"ay ,{admin_data.accounts} mali, "
+            return f"ay ,{g_admin_data.accounts} mali, "
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/adminPage', methods=['POST', 'GET'])
