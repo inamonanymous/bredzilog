@@ -201,6 +201,7 @@ def updateSettings():
 def userSettings():
     user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
     if user_login is not None and 'user-email' in session:
+        brgy, houseNo, street, municipality, province = user_login.get_address()
         return render_template('user-settings.html', user_login=user_login)
     return redirect(url_for('main.userPage'))
 
@@ -209,7 +210,10 @@ def userDashboard():
     if 'user-email' in session:
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
         print(user_login)
+        
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email())
+    if len(str(session.get('nameuser', ""))) <= 1:
+        return redirect(url_for('main.userPage'))
     return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""))
 
 @user_bp.route('/signedin', methods=['POST', 'GET'])
@@ -240,17 +244,9 @@ def userPage():
     nameuser = request.form.get('nameuser')
     if nameuser is not None:
         if len(nameuser) > 1:
+            print(nameuser+"sasd")
             session['nameuser'] = nameuser
-            user_option_str = f"""
-                            <h3> Hello {nameuser}
-                            <a href="/tableReservation">
-                                        <button class="btn btn-danger mt-2" style="margin-left: 20px;" name="admin">Table Reservation</button>
-                                    </a>
-                                    <a href="/deliverSetup">
-                                        <button class="btn btn-danger mt-2" style="margin-left: 20px;" name="admin">Deliver Food</button>
-                                    </a>
-                            """
-            return render_template("user-page.html", user_option_str=user_option_str)
+            return redirect(url_for('main.userDashboard'))
         return "Enter valid name" 
     return render_template("user-page.html", user_option_str=user_option_str)
 

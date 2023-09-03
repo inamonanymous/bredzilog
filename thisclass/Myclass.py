@@ -279,20 +279,23 @@ class UserData:
         if user and check_password_hash(user.get_password(), password):
             return True
         return False
-    ############################################################################################################
+    
     def getByEmail(self, email):
-        for i in self.accounts:
-            if i.get_email()==email:
-                user = User(i.get_firstname(), i.get_surname(), i.get_email(), i.get_phone(), "")
-                #address_obj = json.loads(i.get_address())
-                #brgy, houseNo, street, municipality, province = address_obj['brgy'], address_obj['houseNo'], address_obj['street'], address_obj['municipality'], address_obj['province']
-                user.set_password(i.get_password())
-                user.set_id(i.get_id())
-                #user.set_address(brgy, houseNo, street, municipality, province)
-                return user
-        return None    
+        try:
+            for i in self.accounts:
+                if i.get_email()==email:
+                    user = User(i.get_firstname(), i.get_surname(), i.get_email(), i.get_phone(), "")
+                    address_obj = i.get_address()
+                    brgy, houseNo, street, municipality, province = address_obj['brgy'], address_obj['houseNo'], address_obj['street'], address_obj['municipality'], address_obj['province']
+                    user.set_password(i.get_password())
+                    user.set_id(i.get_id())
+                    user.set_address(brgy, houseNo, street, municipality, province)
+                    return user
+        except:
+            print('there were error on UserData.getbyEmail(arg) method')
+            return None    
 
-    def checkIfExists(self, email):
+    def checkIfExists(self, email) -> bool:
         for i in self.accounts:
             if i.email == email:
                 return True
