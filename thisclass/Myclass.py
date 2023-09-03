@@ -358,6 +358,12 @@ class User:
     def get_address(self):
         return self._address
     
+    def get_per_address(self):
+        if any(value is None for value in self._address.values()):
+            return None, None, None, None, None
+
+        return self._address['brgy'], self._address['street'], self._address['houseNo'], self._address['municipality'], self._address['province']
+    
     def get_photo(self):
         return self._photo
     

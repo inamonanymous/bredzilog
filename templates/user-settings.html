@@ -18,20 +18,20 @@
             <fieldset>
               <legend>Add Shipping Address</legend>
               <label for="brgy">Baranggay:</label>
-              <input type="text" id="brgy" name="brgy">
+              <input type="text" id="brgy" name="brgy" value=" {{ brgy }} ">
 
               <label for="street">Street:</label>
-              <input type="text" id="street" name="street">
+              <input type="text" id="street" name="street" value="{{street}}">
               <br>
 
               <label for="houseNo">House No:</label>
-              <input type="text" id="houseNo" name="houseNo">
+              <input type="text" id="houseNo" name="houseNo" value="{{houseNo}}">
 
               <label for="municipality">Municipality:</label>
-              <input type="text" id="municipality" name="municipality">
+              <input type="text" id="municipality" name="municipality" value="{{municipality}}">
 
               <label for="province">Province/City:</label>
-              <input type="text" id="province" name="province">
+              <input type="text" id="province" name="province" value="{{province}}">
               
               
 
@@ -40,5 +40,7 @@
             
             <input type="submit" value="Submit">
           </form>
+
+          <a href="{{ url_for('main.userDashboard') }}"><button class="btn-warning">Back to Dashboard</button></a>
     </div>
 {% endblock %}

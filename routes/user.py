@@ -201,8 +201,8 @@ def updateSettings():
 def userSettings():
     user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
     if user_login is not None and 'user-email' in session:
-        brgy, houseNo, street, municipality, province = user_login.get_address()
-        return render_template('user-settings.html', user_login=user_login)
+        brgy, street, houseNo, municipality, province = user_login.get_per_address()
+        return render_template('user-settings.html', user_login=user_login, brgy=brgy, houseNo=houseNo, street=street, municipality=municipality, province=province)
     return redirect(url_for('main.userPage'))
 
 @user_bp.route('/userDashboard', methods=['POST', 'GET'])
