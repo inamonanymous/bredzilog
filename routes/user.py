@@ -187,14 +187,14 @@ def updateSettings():
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
         if user_login is not None and 'user-email' in session:
             user_login.set_address(brgy, street, houseNo, municipality, province)
+            print(user_login)
+            print(str(user_login.get_address()))
             g_user_data.saveAddress(user_login)
             
             return redirect(url_for('main.userDashboard'))
-        print(f"prob1{user_login}")
-        print("prob1"+str(session.get('user-email', "")))
+        
         return redirect(url_for('main.userSettings'))
-    print(f"prob2{user_login}")
-    print("prob2"+str(session.get('user-email', "")))
+    
     return redirect(url_for('main.userSettings'))
 
 @user_bp.route('/userSettings', methods=['POST', 'GET'])
@@ -208,8 +208,9 @@ def userSettings():
 def userDashboard():
     if 'user-email' in session:
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
-        return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.email)
-    return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.email)
+        print(user_login)
+        return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email())
+    return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""))
 
 @user_bp.route('/signedin', methods=['POST', 'GET'])
 def signedin():
@@ -222,7 +223,7 @@ def signedin():
                 session.pop('user-email', None)
                 return "session expired"
             session['user-email'] = email
-            session['nameuser'] = f"{g_user_login.firstname}, {g_user_login.surname}"
+            session['nameuser'] = f"{g_user_login.get_firstname()}, {g_user_login.get_surname()}"
             return redirect(url_for('main.userDashboard'))
         else:
             return f"invalid username or password"

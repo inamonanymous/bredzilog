@@ -212,23 +212,33 @@ class Admin:
     def __repr__(self) -> str:
         return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"  
     
-
+import json
 class UserData:
     def __init__(self):
         self.db = DATABASE
         self.accounts = []
         self.fetch_from_db()
         
-
+##################################################################
     def create_object(self, i):
-        firstname, surname, email, phone, password = i
-        return User(firstname, surname, email, phone, password)
+        id, firstname, surname, email, phone, password, photo, address = i
+        user = User(firstname, surname, email, phone, password)
+        if len(str(address)) == 0 or address is None:
+            user.set_id(id)
+            user.set_photo(photo)
+            return user
+        address_obj = json.loads(address)
+        brgy, houseNo, street, municipality, province = address_obj['brgy'], address_obj['houseNo'], address_obj['street'], address_obj['municipality'] ,address_obj['province']
+        user.set_address(brgy, houseNo, street, municipality, province)
+        user.set_id(id)
+        user.set_photo(photo)
+        return user
 
 
     def fetch_from_db(self):
         connection = sqlite3.connect(self.db)
         cursor = connection.cursor()
-        rows = cursor.execute('SELECT name, surname, email, phone, password FROM users')
+        rows = cursor.execute('SELECT * FROM users')
         for i in rows:
             obj = self.create_object(i)
             self.accounts.append(obj)
@@ -240,42 +250,45 @@ class UserData:
             cursor = conn.cursor()
 
             cursor.execute('INSERT INTO users (name, surname, email, phone, password) VALUES (?,?,?,?,?)', 
-                        (user.firstname,
-                            user.surname,
-                            user.email,
-                            user.phone,
-                            generate_password_hash(user.password),))
+                        (user.get_firstname(),
+                            user.get_surname(),
+                            user.get_email(),
+                            user.get_phone(),
+                            generate_password_hash(user.get_password()),))
             
             conn.commit()
             conn.close()
         except:
             print("error saving to database")
 
-    """
-        bug
-    """#############################################################################
+    
     def saveAddress(self, user):
         
             conn = sqlite3.connect(self.db)
             cursor = conn.cursor()
-            cursor.execute('INSERT INTO users (address) VALUES (?)', (user.address))
+            address = json.dumps(user.get_address())
+            cursor.execute('UPDATE users SET address = ? WHERE email = ?', (address, user.get_email(),))
             
             conn.commit()
             conn.close()
-        #############################################################################
+        
         
 
     def loginIsTrue(self, email, password) -> bool:
         user = self.getByEmail(email)
-        if user and check_password_hash(user.password, password):
+        if user and check_password_hash(user.get_password(), password):
             return True
         return False
-    
+    ############################################################################################################
     def getByEmail(self, email):
         for i in self.accounts:
-            if i.email==email:
-                user = User(i.firstname, i.surname, i.email, i.phone, "")
-                user.password = i.password
+            if i.get_email()==email:
+                user = User(i.get_firstname(), i.get_surname(), i.get_email(), i.get_phone(), "")
+                #address_obj = json.loads(i.get_address())
+                #brgy, houseNo, street, municipality, province = address_obj['brgy'], address_obj['houseNo'], address_obj['street'], address_obj['municipality'], address_obj['province']
+                user.set_password(i.get_password())
+                user.set_id(i.get_id())
+                #user.set_address(brgy, houseNo, street, municipality, province)
                 return user
         return None    
 
@@ -290,21 +303,25 @@ class UserData:
 
 class User: 
     def __init__(self, firstname, surname, email, phone, password):
-        self.firstname = firstname
-        self.surname = surname
-        self.email = email
-        self.phone = phone
-        self.password = password
-        self.address = {'brgy': None, 
+        self._id = int
+        self._firstname = firstname
+        self._surname = surname
+        self._email = email
+        self._phone = phone
+        self._password = password
+        self._address = {'brgy': None, 
                         'street': None,
                         'houseNo': None,
                         'municipality': None,
                         'province': None
                         }
-        self.photo = None
+        self._photo = None
+
+    def set_id(self, id):
+        self._id = id
 
     def set_address(self, brgy, street, houseNo, municipality, province):
-        self.address = {'brgy': str(brgy),
+        self._address = {'brgy': str(brgy),
                         'street': str(street),
                         'houseNo': str(houseNo),
                         'municipality': str(municipality),
@@ -312,8 +329,37 @@ class User:
                         }
 
     def set_photo(self, photo):
-        self.photo = photo
+        self._photo = photo
     
+    def set_password(self, password):
+        self._password = password
+
+    def get_id(self):
+        return self._id
+
+    def get_firstname(self):
+        return self._firstname
+
+    def get_surname(self):
+        return self._surname
+    
+    def get_email(self):
+        return self._email
+    
+    def get_phone(self):
+        return self._phone
+    
+    def get_password(self):
+        return self._password
+    
+    def get_address(self):
+        return self._address
+    
+    def get_photo(self):
+        return self._photo
+    
+    def __repr__(self) -> str:
+        return f"ID: {self.get_id()}, Firstname : {self.get_firstname()}, Surname: {self.get_surname()}, Email: {self.get_email()}, Phone: {self.get_phone()}, Address: {self.get_address()}"
 
 import uuid
 import random
