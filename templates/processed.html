@@ -10,29 +10,32 @@
             {{ divString | safe }}
         </div>
 
-        <h4>Please Complete Remaining Fields to Continue</h4>
+        
 
+
+        {% if myBool %}
         <div class="custom-form">
+            <h4>Please Complete Remaining Fields to Continue</h4>
             <form action="/completed" method="post">
                 <div class="form-group">
                     <label for="brgy">Enter Baranggay</label>
-                    <input type="text" class="form-control" name="brgy" id="inputBrgy" maxlength="50" required>
+                    <input type="text" class="form-control" name="brgy" id="inputBrgy" maxlength="50" required value="{{ user_login.get_address()['brgy'] }}">
                 </div>
                 <div class="form-group">
                     <label for="street">Enter Street</label>
-                    <input type="text" class="form-control" name="street" id="inputBrgy" maxlength="50" required>
+                    <input type="text" class="form-control" name="street" id="inputBrgy" maxlength="50" required value="{{ user_login.get_address()['street'] }}">
                 </div>
                 <div class="form-group">
                     <label for="houseNo">Enter House No.</label>
-                    <input type="text" class="form-control" name="houseNo" id="inputBrgy" maxlength="50" required placeholder="Block and Lot for subdivisions and villages">
+                    <input type="text" class="form-control" name="houseNo" id="inputBrgy" maxlength="50" required placeholder="Block and Lot for subdivisions and villages" value="{{ user_login.get_address()['houseNo'] }}">
                 </div>
                 <div class="form-group">
                     <label for="municipality">Enter Municipality</label>
-                    <input type="text" class="form-control" name="municipality" id="inputMunicipality" maxlength="50" required>
+                    <input type="text" class="form-control" name="municipality" id="inputMunicipality" maxlength="50" required value="{{ user_login.get_address()['municipality'] }}">
                 </div>
                 <div class="form-group">
                     <label for="province">Enter Province</label>
-                    <input type="text" class="form-control" name="province" id="inputProvince" maxlength="50" required>
+                    <input type="text" class="form-control" name="province" id="inputProvince" maxlength="50" required value="{{ user_login.get_address()['province'] }}">
                 </div>
                 <div class="form-group">
                     <label for="name">Enter Fullname</label>
@@ -46,6 +49,9 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
+        {% else %}
+        <h2>You are ${{ short }} short. Please pay equal or higher than to total amount</h2>
+        {% endif %}
     </div>
 
 {% endblock %}

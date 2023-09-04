@@ -53,39 +53,40 @@ def completed():
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
-    input_field = request.form.get('processingField')
-    isGcash = session.get('isGcash')
-    nameuser = session.get('nameuser', "")
-    if pnt.checkIfInt(input_field):
-        if isGcash==1:
-            reference = str(input_field)
-            if len(reference)!=13:
-                return "incorrect reference number"
-            session['referenceNo'] = reference
-            divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
-            return render_template('processed.html', divString=divString, nameuser=nameuser)
-        elif isGcash==0:
-            total_price = cart.getTotal() + 20 # plus 20 for delivery fee
-            money = int(input_field)
-            session['money_from_cus'] = money
-            change = 0
-            if money<total_price:
-                short=total_price-money
-                divString = f"<h2>You are ${ short } short. Please pay equal or higher than to total amount</h2>"
-                return render_template('processed.html', money=money, total_price=total_price, divString=divString, nameuser=nameuser)
-                
-            elif money==total_price:
+    if 'user-email' or 'nameuser' in session:
+        user_login = g_user_data.getByEmail(str(session.get('user-email')))
+        input_field = request.form.get('processingField')
+        isGcash = session.get('isGcash')
+        nameuser = session.get('nameuser', "")
+        if pnt.checkIfInt(input_field):
+            if isGcash==1:
+                reference = str(input_field)
+                if len(reference)!=13:
+                    return "incorrect reference number"
+                session['referenceNo'] = reference
                 divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
-                
-                return render_template('processed.html', divString=divString, nameuser=nameuser)
+                return render_template('processed.html', divString=divString, nameuser=nameuser, user_login=user_login, myBool=True)
+            elif isGcash==0:
+                total_price = cart.getTotal() + 20 # plus 20 for delivery fee
+                money = int(input_field)
+                session['money_from_cus'] = money
+                change = 0
+                if money<total_price:
+                    short=total_price-money
+                    return render_template('processed.html', money=money, total_price=total_price, divString=divString, nameuser=nameuser, myBool=False, short=short, user_login=user_login)
+                    
+                elif money==total_price:
+                    divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
+                    
+                    return render_template('processed.html', divString=divString, nameuser=nameuser, myBool=True, user_login=user_login)
 
-            
-            change = money-total_price
-            divString = f"""<h1>THANK YOU FOR CHOOSING US</h1>
-                            <h5>Your Change is ${ change }</h5>
-                            <h5>Expect this amount from the rider</h5>
-                        """
-            return render_template('processed.html',divString=divString, nameuser=nameuser)
+                
+                change = money-total_price
+                divString = f"""<h1>THANK YOU FOR CHOOSING US</h1>
+                                <h5>Your Change is ${ change }</h5>
+                                <h5>Expect this amount from the rider</h5>
+                            """
+                return render_template('processed.html',divString=divString, nameuser=nameuser, myBool=True, user_login=user_login)
     
     return f"please enter a form of number, you entered: {input_field}"
 
@@ -119,15 +120,19 @@ def toCheckout():
 
 @user_bp.route('/deliverSetup', methods=['POST', 'GET'])
 def deliverSetup():
-    
-    menu = menus.items
-    my_cart = cart.showList()
-    original_values = []
-    for i in my_cart:
-        for j in i:
-            original_values.append(j)
-    total = cart.getTotal()
-    return render_template('deliver-setup.html', menu=menu, original_values=original_values, total=total), 200
+    if session.get('nameuser') or session.get('user-email') is not None :
+        print(session.items())
+        print(session.get('nameuser'))
+        print(session.get('nameuser'))
+        menu = menus.items
+        my_cart = cart.showList()
+        original_values = []
+        for i in my_cart:
+            for j in i:
+                original_values.append(j)
+        total = cart.getTotal()
+        return render_template('deliver-setup.html', menu=menu, original_values=original_values, total=total)
+    return redirect(url_for('main.userPage'))
 
 @user_bp.route('/deleteItem/<int:item_id>', methods=["GET"])
 def deleteItem(item_id):
@@ -212,10 +217,10 @@ def userDashboard():
         print(user_login)
         
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email())
-    if len(str(session.get('nameuser', ""))) <= 1:
-        return redirect(url_for('main.userPage'))
-    return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""))
-
+    if 'nameuser' in session:
+        return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""))    
+    return redirect(url_for('main.userPage'))
+    
 @user_bp.route('/signedin', methods=['POST', 'GET'])
 def signedin():
     email, password = request.form.get('user-email'), request.form.get('user-password')
@@ -224,7 +229,7 @@ def signedin():
         if g_user_data.loginIsTrue(email, password):
             g_user_login =  g_user_data.getByEmail(email)
             if g_user_login is None:
-                session.pop('user-email', None)
+                clearAllSession()
                 return "session expired"
             session['user-email'] = email
             session['nameuser'] = f"{g_user_login.get_firstname()}, {g_user_login.get_surname()}"
@@ -256,3 +261,4 @@ def clearAllSession():
     session.pop('isGcash', None) 
     session.pop('money_from_cus', None)
     session.pop('nameuser', None)
+    session.pop('user-email', None)

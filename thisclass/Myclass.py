@@ -10,10 +10,8 @@ DATABASE = os.getenv('DATABASE_URL')
 """
 def checkIfInt(n):
     try:
-        int_val = int(n)
-        print(int_val)
-        return True
-    except ValueError:
+        return int(n)
+    except TypeError:
         return False
 
 
@@ -297,7 +295,7 @@ class UserData:
 
     def checkIfExists(self, email) -> bool:
         for i in self.accounts:
-            if i.email == email:
+            if i.get_email() == email:
                 return True
             return False
         
@@ -319,6 +317,7 @@ class User:
                         'province': None
                         }
         self._photo = None
+        
 
     def set_id(self, id):
         self._id = id
@@ -406,19 +405,22 @@ class ReceiptsData:
 
 
     def save_to_db(self, receipt):
-        conn = sqlite3.connect(self.db)
-        cursor = conn.cursor()
-        
-        cursor.execute('INSERT INTO receipt (unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice) VALUES (?,?,?,?,?,?,?)', 
-                       (receipt.unique,
-                       receipt.name,
-                       receipt.address,
-                       receipt.phone,
-                       receipt.from_customer,
-                       receipt.referrenceNo,
-                       receipt.price,))
-        conn.commit()
-        conn.close()
+        try:
+            conn = sqlite3.connect(self.db)
+            cursor = conn.cursor()
+            
+            cursor.execute('INSERT INTO receipt (unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice) VALUES (?,?,?,?,?,?,?)', 
+                        (receipt.unique,
+                        receipt.name,
+                        receipt.address,
+                        receipt.phone,
+                        receipt.from_customer,
+                        receipt.referrenceNo,
+                        receipt.price,))
+            conn.commit()
+            conn.close()
+        except sqlite3.IntegrityError:
+            print("can't add null values to strict data")
 
 
 class Receipts:
