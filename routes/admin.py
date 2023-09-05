@@ -34,7 +34,7 @@ def signedin():
             if g_admin_login is None:
                 session.pop('email', None)
                 return "session expired"
-            session["email"] = g_admin_login.email
+            session["email"] = g_admin_login.get_email
             print(session.get('email'))
             return redirect(url_for('admin.dashboard'))
         else: 

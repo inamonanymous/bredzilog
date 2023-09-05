@@ -213,7 +213,7 @@ def updateSettings():
 def userSettings():
     user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
     if user_login is not None and 'user-email' in session:
-        brgy, street, houseNo, municipality, province = user_login.get_per_address()
+        brgy, street, houseNo, municipality, province = user_login.get_per_address
         return render_template('user-settings.html', user_login=user_login, brgy=brgy, houseNo=houseNo, street=street, municipality=municipality, province=province)
     return redirect(url_for('main.userPage'))
 
@@ -223,7 +223,7 @@ def userDashboard():
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
         print(user_login)
         
-        return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email())
+        return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email)
     if 'nameuser' in session:
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""))    
     return redirect(url_for('main.userPage'))
@@ -239,7 +239,7 @@ def signedin():
                 clearAllSession()
                 return "session expired"
             session['user-email'] = email
-            session['nameuser'] = f"{g_user_login.get_firstname()}, {g_user_login.get_surname()}"
+            session['nameuser'] = f"{g_user_login.get_firstname}, {g_user_login.get_surname}"
             return redirect(url_for('main.userDashboard'))
         else:
             return f"invalid username or password"
@@ -256,7 +256,7 @@ def userPage():
     nameuser = request.form.get('nameuser')
     if nameuser is not None:
         if len(nameuser) > 1:
-            print(nameuser+"sasd")
+            
             session['nameuser'] = nameuser
             
             return redirect(url_for('main.userDashboard'))

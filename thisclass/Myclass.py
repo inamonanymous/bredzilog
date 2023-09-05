@@ -13,6 +13,45 @@ def checkIfInt(n):
         return int(n)
     except TypeError:
         return False
+class Person():
+    def __init__(self, firstname, surname, email, phone, password):
+        self._firstname = firstname
+        self._surname = surname
+        self._email = email
+        self._phone = phone
+        self._password = password
+
+    
+    def set_id(self, id):
+        self._id = id
+
+    
+    def set_password(self, password):
+        self._password = password
+
+    @property
+    def get_id(self):
+        return self._id
+    
+    @property
+    def get_firstname(self):
+        return self._firstname
+
+    @property
+    def get_surname(self):
+        return self._surname
+    
+    @property
+    def get_email(self):
+        return self._email
+    
+    @property
+    def get_phone(self):
+        return self._phone
+    
+    @property
+    def get_password(self):
+        return self._password
 
 
 """
@@ -159,7 +198,7 @@ class AdminData:
 
     def loginIsTrue(self, email, password) -> bool:
         admin = self.getByEmail(email)
-        if admin and check_password_hash(admin.password, password):
+        if admin and check_password_hash(admin.get_password, password):
             return True
         return False
 
@@ -182,9 +221,9 @@ class AdminData:
 
     def getByEmail(self, email):
         for i in self.accounts:
-            if i.email==email:
-                admin = Admin(i.firstname, i.surname, i.email, i.phone, "")
-                admin.password = i.password
+            if i.get_email==email:
+                admin = Admin(i.get_firstname, i.get_surname, i.get_email, i.get_phone, "")
+                admin.set_password(i.get_password) 
                 return admin
         return None
 
@@ -198,17 +237,13 @@ class AdminData:
         return ", ".join([str(admin) for admin in self.accounts])
     
 
-class Admin:
+class Admin(Person):
     def __init__(self, firstname, surname, email, phone, password):
-        self.firstname = firstname
-        self.surname = surname
-        self.email = email
-        self.phone = phone
-        self.password = password
+        super().__init__(firstname, surname, email, phone, password)
         
     
     def __repr__(self) -> str:
-        return f"({self.firstname},{self.surname},{self.email},{self.phone},{self.password})"  
+        return f"({self.get_firstname},{self.get_surname},{self.get_email},{self.get_phone},{self.get_password})"  
     
 import json
 class UserData:
@@ -254,11 +289,11 @@ class UserData:
             cursor = conn.cursor()
 
             cursor.execute('INSERT INTO users (name, surname, email, phone, password) VALUES (?,?,?,?,?)', 
-                        (user.get_firstname(),
-                            user.get_surname(),
-                            user.get_email(),
-                            user.get_phone(),
-                            generate_password_hash(user.get_password()),))
+                        (user.get_firstname,
+                            user.get_surname,
+                            user.get_email,
+                            user.get_phone,
+                            generate_password_hash(user.get_password),))
             
             conn.commit()
             conn.close()
@@ -284,19 +319,19 @@ class UserData:
     def loginIsTrue(self, email, password) -> bool:
         try:
             user = self.getByEmail(email)
-            return user and check_password_hash(user.get_password(), password)
+            return user and check_password_hash(user.get_password, password)
         except:
             print('there were errors in UserData.loginIsTrue(arg, arg*) method')    
     
     def getByEmail(self, email):
         try:
             for i in self.accounts:
-                if i.get_email()==email:
-                    user = User(i.get_firstname(), i.get_surname(), i.get_email(), i.get_phone(), "")
-                    address_obj = i.get_address()
+                if i.get_email==email:
+                    user = User(i.get_firstname, i.get_surname, i.get_email, i.get_phone, "")
+                    address_obj = i.get_address
                     brgy, houseNo, street, municipality, province = address_obj['brgy'], address_obj['houseNo'], address_obj['street'], address_obj['municipality'], address_obj['province']
-                    user.set_password(i.get_password())
-                    user.set_id(i.get_id())
+                    user.set_password(i.get_password)
+                    user.set_id(i.get_id)
                     user.set_address(brgy, houseNo, street, municipality, province)
                     return user
         except:
@@ -313,14 +348,10 @@ class UserData:
     def __repr__(self):
         return ", ".join([str(user) for user in self.accounts])
 
-class User: 
+class User(Person): 
     def __init__(self, firstname: str = None, surname=None, email=None, phone=None, password=None):
+        super().__init__(firstname, surname, email, phone, password)
         self._id = int
-        self._firstname = firstname
-        self._surname = surname
-        self._email = email
-        self._phone = phone
-        self._password = password
         self._address = {'brgy': None, 
                         'street': None,
                         'houseNo': None,
@@ -329,9 +360,6 @@ class User:
                         }
         self._photo = None
         
-
-    def set_id(self, id):
-        self._id = id
 
     def set_address(self, brgy, street, houseNo, municipality, province):
         self._address = {'brgy': str(brgy),
@@ -347,31 +375,14 @@ class User:
     def set_password(self, password):
         self._password = password
 
-    def get_id(self):
-        return self._id
-
-    def get_firstname(self):
-        return self._firstname
-
-    def get_surname(self):
-        return self._surname
-    
-    def get_email(self):
-        return self._email
-    
-    def get_phone(self):
-        return self._phone
-    
-    def get_password(self):
-        return self._password
-    
+    @property
     def get_address(self):
         return self._address
     
     def check_address_null(self):
         return all(value != 'None' for value in self._address.values())
-            
 
+    @property        
     def get_per_address(self):
         if any(value is None for value in self._address.values()):
             return None, None, None, None, None
@@ -382,7 +393,9 @@ class User:
         return self._photo
     
     def __repr__(self) -> str:
-        return f"ID: {self.get_id()}, Firstname : {self.get_firstname()}, Surname: {self.get_surname()}, Email: {self.get_email()}, Phone: {self.get_phone()}, Address: {self.get_address()}"
+        return f"ID: {self.get_id}, Firstname : {self.get_firstname}, Surname: {self.get_surname}, Email: {self.get_email}, Phone: {self.get_phone}, Address: {self.get_address}"
+
+
 
 import uuid
 import random

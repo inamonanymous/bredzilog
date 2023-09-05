@@ -4,13 +4,13 @@
         <form action="/updateSettings" method="post">
             <fieldset>
               <legend>User Information</legend>
-              <p class="lead "><b>Account Email:</b> <i>{{ user_login.get_email() }}</i></b></p>
+              <p class="lead "><b>Account Email:</b> <i>{{ user_login.get_email }}</i></b></p>
               <label for="name">Name:</label>
-              <input type="text" id="name" name="name" value="{{ user_login.get_firstname() }} {{ user_login.get_surname() }}">
+              <input type="text" id="name" name="name" value="{{ user_login.get_firstname }} {{ user_login.get_surname }}">
               <br>
               
               <label for="phone">Phone:</label>
-              <input type="phone" id="phone" name="phone" value="{{ user_login.get_phone() }}">
+              <input type="phone" id="phone" name="phone" value="{{ user_login.get_phone }}">
               
               <!-- Additional form fields for contact information -->
             </fieldset>
