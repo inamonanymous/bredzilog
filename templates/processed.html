@@ -10,10 +10,13 @@
             {{ divString | safe }}
         </div>
 
+        
+
+
         {% if myBool %}
         <div class="custom-form">
             <h4>Please Complete Remaining Fields to Continue</h4>
-            {% if user_login %}
+            {% if user_login and  user_login.check_address_null() %}
             <form action="/completed" method="post">
                 <div class="form-group">
                     <label for="brgy">Enter Baranggay</label>
@@ -46,6 +49,7 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
             {% else %}
+            
             <form action="/completed" method="post">
                 <div class="form-group">
                     <label for="brgy">Enter Baranggay</label>

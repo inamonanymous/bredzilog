@@ -217,7 +217,7 @@ class UserData:
         self.accounts = []
         self.fetch_from_db()
         
-##################################################################
+
     def create_object(self, i):
         try:
             id, firstname, surname, email, phone, password, photo, address = i
@@ -246,7 +246,7 @@ class UserData:
                 self.accounts.append(obj)
             connection.close()
         except:
-            print('there were errors in UserData.fetch)_from_fb() method')
+            print('there were errors in UserData.fetch_from_db() method')
 
     def save(self, user):
         try:
@@ -314,7 +314,7 @@ class UserData:
         return ", ".join([str(user) for user in self.accounts])
 
 class User: 
-    def __init__(self, firstname, surname, email, phone, password):
+    def __init__(self, firstname: str = None, surname=None, email=None, phone=None, password=None):
         self._id = int
         self._firstname = firstname
         self._surname = surname
@@ -368,6 +368,10 @@ class User:
     def get_address(self):
         return self._address
     
+    def check_address_null(self):
+        return all(value != 'None' for value in self._address.values())
+            
+
     def get_per_address(self):
         if any(value is None for value in self._address.values()):
             return None, None, None, None, None

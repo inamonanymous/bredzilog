@@ -62,6 +62,7 @@ def completed():
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
     if 'user-email' or 'nameuser' in session:
+        g_user_data.fetch_from_db()
         user_login = g_user_data.getByEmail(str(session.get('user-email')))
         input_field = request.form.get('processingField')
         isGcash = session.get('isGcash')
@@ -202,7 +203,7 @@ def updateSettings():
             print(str(user_login.get_address()))
             g_user_data.saveAddress(user_login)
             
-            return redirect(url_for('main.userDashboard'))
+            return redirect(url_for('main.userPage'))
         
         return redirect(url_for('main.userSettings'))
     
@@ -257,6 +258,7 @@ def userPage():
         if len(nameuser) > 1:
             print(nameuser+"sasd")
             session['nameuser'] = nameuser
+            
             return redirect(url_for('main.userDashboard'))
         return "Enter valid name" 
     return render_template("user-page.html", user_option_str=user_option_str)
