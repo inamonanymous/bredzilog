@@ -9,7 +9,7 @@ load_dotenv()
 DATABASE = os.getenv("DATABASE_URL")
 cart = pnt.Cart()
 menus = pnt.EachData()
-g_user_data = pnt.UserData()
+#g_user_data = pnt.UserData()
 
 @user_bp.route('/', methods=['POST', 'GET'])
 def index():
@@ -17,7 +17,7 @@ def index():
 
 @user_bp.route('/logout', methods=['POST', 'GET'])
 def logout():
-    clearAllSession()
+    session.clear()
     return redirect(url_for('main.userPage'))
     
 
@@ -40,7 +40,7 @@ def completed():
             for i in cart.showList():
                 for j in i:
                     this_cart.append(j)
-            clearAllSession()
+            session.clear()
             
             return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
         this_cart = []
@@ -55,14 +55,15 @@ def completed():
         for i in cart.showList():
             for j in i:
                 this_cart.append(j)
-        clearAllSession()
+        session.clear()
         return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
     return redirect(url_for('main.userPage'))
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
+    g_user_data = pnt.UserData()
     if 'user-email' or 'nameuser' in session:
-        g_user_data.fetch_from_db()
+        g_user_data = pnt.UserData()
         user_login = g_user_data.getByEmail(str(session.get('user-email')))
         input_field = request.form.get('processingField')
         isGcash = session.get('isGcash')
@@ -101,6 +102,7 @@ def processPayment():
 
 @user_bp.route('/formOfPayment', methods=['POST', 'GET'])
 def formOfPayment():
+    
     formString = str()
     if 'cash-on-del' in request.form:
         session["isGcash"] = 0
@@ -129,10 +131,7 @@ def toCheckout():
 
 @user_bp.route('/deliverSetup', methods=['POST', 'GET'])
 def deliverSetup():
-    if session.get('nameuser') or session.get('user-email') is not None :
-        print(session.items())
-        print(session.get('nameuser'))
-        print(session.get('nameuser'))
+    if session.get('nameuser') or session.get('user-email') is not None:
         menu = menus.items
         my_cart = cart.showList()
         original_values = []
@@ -158,16 +157,15 @@ def addCart():
             selected_product = i
             break
     if selected_product:
-        cart.addItem(pnt.Item(selected_product.getId(), selected_product.getName(), selected_product.getPrice(), selected_product.getType()))
+        cart.addItem(pnt.Item(selected_product.id, selected_product.name, selected_product.price, selected_product.type))
         print(f"{selected_product.name} added to cart.")
     else:
         print("Invalid product ID.")
-    
     return redirect(url_for('main.deliverSetup'))
 
 @user_bp.route('/signedUp', methods=['POST', 'GET'])
 def signedUp():
-    
+    g_user_data = pnt.UserData()
     if request.method == 'POST':
         firstname = request.form.get('firstName')
         surname = request.form.get('surname')
@@ -191,19 +189,19 @@ def signedUp():
 def signUpPage():
     return render_template('sign-up-page.html')
 
-
 @user_bp.route('/updateSettings', methods=['POST', 'GET'])
 def updateSettings():
+    g_user_data = pnt.UserData()
     brgy, street, houseNo, municipality, province = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province')
     if request.method == "POST":
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
         if user_login is not None and 'user-email' in session:
             user_login.set_address(brgy, street, houseNo, municipality, province)
             print(user_login)
-            print(str(user_login.get_address()))
+            print(str(user_login.get_address))
             g_user_data.saveAddress(user_login)
             
-            return redirect(url_for('main.userPage'))
+            return redirect(url_for('main.userDashboard'))
         
         return redirect(url_for('main.userSettings'))
     
@@ -211,6 +209,7 @@ def updateSettings():
 
 @user_bp.route('/userSettings', methods=['POST', 'GET'])
 def userSettings():
+    g_user_data = pnt.UserData()
     user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
     if user_login is not None and 'user-email' in session:
         brgy, street, houseNo, municipality, province = user_login.get_per_address
@@ -219,24 +218,25 @@ def userSettings():
 
 @user_bp.route('/userDashboard', methods=['POST', 'GET'])
 def userDashboard():
+    g_user_data = pnt.UserData()
     if 'user-email' in session:
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
         print(user_login)
         
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email)
-    if 'nameuser' in session:
+    elif 'nameuser' in session:
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""))    
     return redirect(url_for('main.userPage'))
     
 @user_bp.route('/signedin', methods=['POST', 'GET'])
 def signedin():
+    g_user_data = pnt.UserData()
     email, password = request.form.get('user-email'), request.form.get('user-password')
-    
     if request.method == "POST":
         if g_user_data.loginIsTrue(email, password):
-            g_user_login =  g_user_data.getByEmail(email)
+            g_user_login = g_user_data.getByEmail(email)
             if g_user_login is None:
-                clearAllSession()
+                session.clear()
                 return "session expired"
             session['user-email'] = email
             session['nameuser'] = f"{g_user_login.get_firstname}, {g_user_login.get_surname}"
@@ -247,7 +247,7 @@ def signedin():
 
 @user_bp.route('/userPage', methods=['POST', 'GET'])
 def userPage():
-    clearAllSession()
+    session.clear()
     if request.form.get('signIn'):
         return render_template('user-signin.html')
     user_option_str = """
@@ -264,9 +264,3 @@ def userPage():
     return render_template("user-page.html", user_option_str=user_option_str)
 
 
-def clearAllSession():
-    session.pop('formString', None)
-    session.pop('isGcash', None) 
-    session.pop('money_from_cus', None)
-    session.pop('nameuser', None)
-    session.pop('user-email', None)

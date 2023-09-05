@@ -129,51 +129,48 @@ class Item:
         self.price = price
         self.type = type
 
-    def getId(self):
-        return self.id
-
-    def getName(self):
-        return self.name
-
-    def getPrice(self):
-        return self.price
-    
-    def getType(self):
-        return self.type
-
     def __repr__(self):
         return f"{[self.id, self.name, self.price, self.type]}"
 
     
 class Cart:
     def __init__(self):
-        self.list = []
+        self._list = []
 
     def addItem(self, items):
-        self.list.append([items])
+        try:
+            self._list.append([items])
+        except:
+            print('there were errors in Cart.addItem(arg) method')
 
     def deleteItem(self, item_id):
-        isFound = False
-        #O(n*m)
-        for i in self.list:
-            for j in i:
-                if j.id == item_id:
-                    isFound = True
-                    self.list.remove(i)
+        try:
+            isFound = False
+            #O(n*m)
+            for i in self._list:
+                for j in i:
+                    if j.id == item_id:
+                        isFound = True
+                        self._list.remove(i)
+                        break
+                if isFound:
                     break
-            if isFound:
-                break
-        
+        except:
+            print('there were errors in Cart.deleteItem(arg) method')
+            
     
     def getTotal(self):
-        total = 0
-        for i in self.list:
-            for j in i:
-                total += j.price
-        return total
+        try:
+            total = 0
+            for i in self._list:
+                for j in i:
+                    total += j.price
+            return total
+        except:
+            print('there were errors in Cart.getTotal() method')
 
     def showList(self):
-        return self.list
+        return self._list
 
 from werkzeug.security import generate_password_hash, check_password_hash
 class AdminData:
@@ -203,7 +200,7 @@ class AdminData:
         return False
 
 
-    def save(self, admin):
+    """def save(self, admin):
         try:
             conn = sqlite3.connect(self.db)
             cursor = conn.cursor()
@@ -217,7 +214,7 @@ class AdminData:
             conn.commit()
             conn.close()
         except:
-            print("error saving to database")
+            print("error saving to database")"""
 
     def getByEmail(self, email):
         for i in self.accounts:
@@ -245,6 +242,7 @@ class Admin(Person):
     def __repr__(self) -> str:
         return f"({self.get_firstname},{self.get_surname},{self.get_email},{self.get_phone},{self.get_password})"  
     
+
 import json
 class UserData:
     def __init__(self):
@@ -252,7 +250,6 @@ class UserData:
         self.accounts = []
         self.fetch_from_db()
         
-
     def create_object(self, i):
         try:
             id, firstname, surname, email, phone, password, photo, address = i
@@ -297,7 +294,7 @@ class UserData:
             
             conn.commit()
             conn.close()
-            self.fetch_from_db()
+            
         except:
             print("there were errors in UserData.save(arg) method")
 
@@ -306,8 +303,8 @@ class UserData:
             try:
                 conn = sqlite3.connect(self.db)
                 cursor = conn.cursor()
-                address = json.dumps(user.get_address())
-                cursor.execute('UPDATE users SET address = ? WHERE email = ?', (address, user.get_email(),))
+                address = json.dumps(user.get_address)
+                cursor.execute('UPDATE users SET address = ? WHERE email = ?', (address, user.get_email,))
                 
                 conn.commit()
                 conn.close()

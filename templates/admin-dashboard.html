@@ -43,6 +43,11 @@
           ${{ sum }}
         </div>
 
+        <div class="container" id="usercount-container">
+          <p class="text-monospace text-bg-info">Customer Accounts</p>
+          {{ users }}
+        </div>
+
       </div>
 
       <script src="{{ url_for('static', filename='js/admin-dashboard.js') }}"></script>

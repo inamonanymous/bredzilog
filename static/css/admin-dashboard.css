@@ -1,31 +1,52 @@
 body {
-    padding-top: 70px; /* To give space for the buttons */
-  }
+  padding-top: 70px; /* To give space for the buttons */
+}
 
-#parent-container{
-  border: #ccc;
+#parent-container {
+  border: 1px solid #f6e203;
   padding: 20px;
   margin: 20px;
-  align-items: center;
+  display: flex; /* Use flexbox to align items horizontally */
 }
 
 #receipts-container {
-  border: 1px solid #ccc;
+  border: 1px solid #d31010;
   padding: 20px;
-  margin: 20px;
+  margin-right: 20px; /* Add margin to create space between containers */
   min-height: 400px; /* Adjust as needed */
   width: 50%;
+  overflow-y: auto; /* Add vertical scrollbar if content overflows */
 }
 
-#sales-container {
+#receipts-container::-webkit-scrollbar {
+  width: 5px; /* Set the width of the scrollbar */
+}
+
+#receipts-container::-webkit-scrollbar-thumb {
+  background-color: #15fd00; /* Color of the scrollbar thumb */
+  border-radius: 3px; /* Rounded corners for the thumb */
+}
+
+#receipts-container::-webkit-scrollbar-thumb:hover {
+  background-color: #d31010; /* Color of the scrollbar thumb on hover */
+}
+
+#sales-user-container {
+  display: flex;
+  flex-direction: column; /* Stack the sales and usercount containers vertically */
+}
+
+#sales-container,
+#usercount-container {
   width: 200px;
-  height: 120px;
-  background-color: green;  
+  height: 150px;
+  background-color: green;
   border: 1px solid #ccc;
   border-radius: 5px;
   text-align: center;
   padding: 20px;
   font-size: 24px;
+  margin-bottom: 10px; /* Add margin between sales and usercount containers */
 }
 
 .container {

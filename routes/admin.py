@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import thisclass.Myclass as pnt
 
 admin_bp = Blueprint('admin', __name__)
-g_admin_data = pnt.AdminData()
+
 g_admin_login = None
 
 
@@ -13,17 +13,19 @@ def logout():
 
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
+    g_admin_data = pnt.AdminData()
     if 'email' in session:
-        try:
-            receipt_data = pnt.ReceiptsData()
-            return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal())
-        except TypeError:
-            return "render_template('admin-dashboard.html', receipts=list)"
+        #try:
+        receipt_data = pnt.ReceiptsData()
+            
+        return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal(), users=len(pnt.UserData().accounts))
+        """ except TypeError:
+            return "render_template('admin-dashboard.html', receipts=list)"""
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/signedin', methods=['POST', 'GET'])
 def signedin():
-    
+    g_admin_data = pnt.AdminData()
     email = request.form.get('email')
     password = request.form.get('password')
     print(g_admin_data.accounts)
