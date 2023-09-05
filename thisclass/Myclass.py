@@ -219,28 +219,34 @@ class UserData:
         
 ##################################################################
     def create_object(self, i):
-        id, firstname, surname, email, phone, password, photo, address = i
-        user = User(firstname, surname, email, phone, password)
-        if len(str(address)) == 0 or address is None:
+        try:
+            id, firstname, surname, email, phone, password, photo, address = i
+            user = User(firstname, surname, email, phone, password)
+            if len(str(address)) == 0 or address is None:
+                user.set_id(id)
+                user.set_photo(photo)
+                return user
+            address_obj = json.loads(address)
+            brgy, houseNo, street, municipality, province = address_obj['brgy'], address_obj['houseNo'], address_obj['street'], address_obj['municipality'] ,address_obj['province']
+            user.set_address(brgy, houseNo, street, municipality, province)
             user.set_id(id)
             user.set_photo(photo)
             return user
-        address_obj = json.loads(address)
-        brgy, houseNo, street, municipality, province = address_obj['brgy'], address_obj['houseNo'], address_obj['street'], address_obj['municipality'] ,address_obj['province']
-        user.set_address(brgy, houseNo, street, municipality, province)
-        user.set_id(id)
-        user.set_photo(photo)
-        return user
+        except:
+            print('there were errors in UserData.create_object() method')
 
 
     def fetch_from_db(self):
-        connection = sqlite3.connect(self.db)
-        cursor = connection.cursor()
-        rows = cursor.execute('SELECT * FROM users')
-        for i in rows:
-            obj = self.create_object(i)
-            self.accounts.append(obj)
-        connection.close()
+        try:
+            connection = sqlite3.connect(self.db)
+            cursor = connection.cursor()
+            rows = cursor.execute('SELECT * FROM users')
+            for i in rows:
+                obj = self.create_object(i)
+                self.accounts.append(obj)
+            connection.close()
+        except:
+            print('there were errors in UserData.fetch)_from_fb() method')
 
     def save(self, user):
         try:
@@ -256,27 +262,31 @@ class UserData:
             
             conn.commit()
             conn.close()
+            self.fetch_from_db()
         except:
-            print("error saving to database")
+            print("there were errors in UserData.save(arg) method")
 
     
     def saveAddress(self, user):
-        
-            conn = sqlite3.connect(self.db)
-            cursor = conn.cursor()
-            address = json.dumps(user.get_address())
-            cursor.execute('UPDATE users SET address = ? WHERE email = ?', (address, user.get_email(),))
-            
-            conn.commit()
-            conn.close()
-        
+            try:
+                conn = sqlite3.connect(self.db)
+                cursor = conn.cursor()
+                address = json.dumps(user.get_address())
+                cursor.execute('UPDATE users SET address = ? WHERE email = ?', (address, user.get_email(),))
+                
+                conn.commit()
+                conn.close()
+                self.fetch_from_db()
+            except:
+                print('there were errors in UserData.saveAddress(arg) method')
         
 
     def loginIsTrue(self, email, password) -> bool:
-        user = self.getByEmail(email)
-        if user and check_password_hash(user.get_password(), password):
-            return True
-        return False
+        try:
+            user = self.getByEmail(email)
+            return user and check_password_hash(user.get_password(), password)
+        except:
+            print('there were errors in UserData.loginIsTrue(arg, arg*) method')    
     
     def getByEmail(self, email):
         try:
@@ -290,14 +300,15 @@ class UserData:
                     user.set_address(brgy, houseNo, street, municipality, province)
                     return user
         except:
-            print('there were error on UserData.getbyEmail(arg) method')
+            print('there were error in UserData.getbyEmail(arg) method')
             return None    
 
     def checkIfExists(self, email) -> bool:
-        for i in self.accounts:
-            if i.get_email() == email:
-                return True
-            return False
+        try:
+            for i in self.accounts:
+                return i.get_email() == email
+        except:
+            print('there were errors in UserData.checkIfExists(arg) method')    
         
     def __repr__(self):
         return ", ".join([str(user) for user in self.accounts])
@@ -422,6 +433,15 @@ class ReceiptsData:
         except sqlite3.IntegrityError:
             print("can't add null values to strict data")
 
+    def sumTotal(self):
+        try:
+            sum = 0
+            for i in self.transactions:
+                sum = sum+int(i.price)
+            return sum
+        except:
+            return -1
+
 
 class Receipts:
     def __init__(self, unique, name, address, phone, from_customer, referrenceNo, price):
@@ -433,8 +453,6 @@ class Receipts:
         self.from_customer = from_customer
         self.referrenceNo = referrenceNo
         self.price = price
-
-    
 
     def __repr__(self) -> str:
         return f"""

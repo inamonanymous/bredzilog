@@ -4,10 +4,10 @@
 {% endblock %}
 
 {% block body %}
-    <h2 class="text-bg-info">List of Receipts</h2>
+    
     <br>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container">
+        <div class="container-lg">
           <button class="btn btn-secondary ml-auto">Inventory</button>
           <button class="btn btn-secondary ml-2">Settings</button>
           <button class="btn btn-secondary ml-2">Manage Data</button>
@@ -15,27 +15,36 @@
         </div>
       </nav>
     
-      <!-- Dashboard content -->
-      <div class="container" id="dashboard-container">
-        <!-- Content will go here -->
-        <ul>
-          {% for i in receipts %}
-          {% set unique = i.unique %}
-          {% set name = i.name %}
-          {% set address = i.address %}
-          {% set phone = i.phone %}
-          {% set from_customer = i.from_customer %}
-          {% set referrenceNo = i.referrenceNo %}
-          {% set price = i.price %}
-          <li>
-            <a href="javascript:void(0)" onclick="showPopUp('{{ unique|e }}', '{{ name|e }}', '{{ address|e }}', '{{ phone|e }}', '{{ from_customer|e }}', '{{ referrenceNo|e }}', '{{ price|e }}')">
-              {{ unique }}
-            </a>
-          </li>
-          {% endfor %}
-        </ul> 
+      <div id="parent-container">
+        <!-- Dashboard content -->
+        <div class="container" id="receipts-container">
+          <p class="display-6 text-info">List of Receipts</p>
+          <!-- Content will go here -->
+          <ul>
+            {% for i in receipts %}
+            {% set unique = i.unique %}
+            {% set name = i.name %}
+            {% set address = i.address %}
+            {% set phone = i.phone %}
+            {% set from_customer = i.from_customer %}
+            {% set referrenceNo = i.referrenceNo %}
+            {% set price = i.price %}
+            <li>
+              <a href="javascript:void(0)" onclick="showPopUp('{{ unique|e }}', '{{ name|e }}', '{{ address|e }}', '{{ phone|e }}', '{{ from_customer|e }}', '{{ referrenceNo|e }}', '{{ price|e }}')">
+                {{ unique }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul> 
+        </div>
+      
+        <div class="container" id="sales-container">
+          <p class="text-monospace text-bg-info">Sales</p>
+          ${{ sum }}
+        </div>
+
       </div>
-    
+
       <script src="{{ url_for('static', filename='js/admin-dashboard.js') }}"></script>
       <!-- Include Bootstrap JS and jQuery -->
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

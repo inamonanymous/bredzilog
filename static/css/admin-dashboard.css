@@ -1,10 +1,37 @@
 body {
     padding-top: 70px; /* To give space for the buttons */
   }
-  #dashboard-container {
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin: 20px;
-    min-height: 400px; /* Adjust as needed */
-    width: 50%;
-  }
+
+#parent-container{
+  border: #ccc;
+  padding: 20px;
+  margin: 20px;
+  align-items: center;
+}
+
+#receipts-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 20px;
+  min-height: 400px; /* Adjust as needed */
+  width: 50%;
+}
+
+#sales-container {
+  width: 200px;
+  height: 120px;
+  background-color: green;  
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  padding: 20px;
+  font-size: 24px;
+}
+
+.container {
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ccc;
+  margin: 10px; /* Add some margin between the containers */
+  display: inline-block; /* Display the containers inline */
+}

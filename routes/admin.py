@@ -16,7 +16,7 @@ def dashboard():
     if 'email' in session:
         try:
             receipt_data = pnt.ReceiptsData()
-            return render_template('admin-dashboard.html', receipts=receipt_data.transactions)
+            return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal())
         except TypeError:
             return "render_template('admin-dashboard.html', receipts=list)"
     return redirect(url_for('admin.adminPage'))

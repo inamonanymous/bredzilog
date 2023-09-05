@@ -15,41 +15,49 @@ g_user_data = pnt.UserData()
 def index():
     return render_template('index.html')
 
+@user_bp.route('/logout', methods=['POST', 'GET'])
+def logout():
+    clearAllSession()
+    return redirect(url_for('main.userPage'))
+    
+
 @user_bp.route('/completed', methods=['POST', 'GET'])
 def completed():
-    baranggay,street, houseNo , municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
-    address = f"Brgy: {baranggay}, Street: {street}, House Number: {houseNo}, Municipality: {municipality}, Province: {province}"
-    isGcash = session.get('isGcash')
-    this_cart = []
-    receipt_data = pnt.ReceiptsData()
-    if isGcash == 0:
-        money = session.get('money_from_cus')
+    if 'isGcash' and 'money_from_cus' and 'nameuser' in session:
+        baranggay,street, houseNo , municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
+        address = f"Brgy: {baranggay}, Street: {street}, House Number: {houseNo}, Municipality: {municipality}, Province: {province}"
+        isGcash = session.get('isGcash')
+        this_cart = []
+        receipt_data = pnt.ReceiptsData()
+        if isGcash == 0:
+            money = session.get('money_from_cus')
+            total_price = int(cart.getTotal() + 20)
+            change = money-total_price
+            unique = pnt.ReceiptsData.generate_unique_id()
+            receipt = pnt.Receipts(str(unique), str(name), str(address), str(phoneNo), int(money), str(), int(total_price))
+            receipt_data.save_to_db(receipt)
+
+            for i in cart.showList():
+                for j in i:
+                    this_cart.append(j)
+            clearAllSession()
+            
+            return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
+        this_cart = []
         total_price = int(cart.getTotal() + 20)
-        change = money-total_price
+        money = "PAID WITHIN GCASH"
+        change = "PAID WITHIN GCASH"
+        referenceNo = session.get('referenceNo')
         unique = pnt.ReceiptsData.generate_unique_id()
-        receipt = pnt.Receipts(unique, name, address, phoneNo, money, str(), total_price)
+        receipt = pnt.Receipts(unique, name, address, phoneNo, int(), referenceNo, total_price)
         receipt_data.save_to_db(receipt)
 
         for i in cart.showList():
             for j in i:
                 this_cart.append(j)
         clearAllSession()
-        
         return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
-    this_cart = []
-    total_price = int(cart.getTotal() + 20)
-    money = "PAID WITHIN GCASH"
-    change = "PAID WITHIN GCASH"
-    referenceNo = session.get('referenceNo')
-    unique = pnt.ReceiptsData.generate_unique_id()
-    receipt = pnt.Receipts(unique, name, address, phoneNo, int(), referenceNo, total_price)
-    receipt_data.save_to_db(receipt)
-
-    for i in cart.showList():
-        for j in i:
-            this_cart.append(j)
-    clearAllSession()
-    return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
+    return redirect(url_for('main.userPage'))
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
@@ -73,7 +81,7 @@ def processPayment():
                 change = 0
                 if money<total_price:
                     short=total_price-money
-                    return render_template('processed.html', money=money, total_price=total_price, divString=divString, nameuser=nameuser, myBool=False, short=short, user_login=user_login)
+                    return render_template('processed.html', money=money, total_price=total_price, nameuser=nameuser, myBool=False, short=short, user_login=user_login)
                     
                 elif money==total_price:
                     divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
@@ -182,8 +190,6 @@ def signedUp():
 def signUpPage():
     return render_template('sign-up-page.html')
 
-    
-
 
 @user_bp.route('/updateSettings', methods=['POST', 'GET'])
 def updateSettings():
@@ -240,9 +246,9 @@ def signedin():
 
 @user_bp.route('/userPage', methods=['POST', 'GET'])
 def userPage():
+    clearAllSession()
     if request.form.get('signIn'):
         return render_template('user-signin.html')
-
     user_option_str = """
                         <form action="/userPage" method="post"> <input type="text" name="nameuser" id="nameuser"><button class="btn btn-danger mt-2" type="submit">Enter</button></form>
                       """
