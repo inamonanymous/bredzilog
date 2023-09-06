@@ -19,7 +19,8 @@ def inventory():
 @admin_bp.route('/admin/manageData', methods=['POST', 'GET'])
 def manageData():
     if 'email' in session:
-        return render_template('manage-data.html', users=pnt.UserData().accounts)
+        users = pnt.UserData()
+        return render_template('manage-data.html', accounts=users.accounts)
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])

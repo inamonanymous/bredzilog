@@ -70,8 +70,8 @@ class EachData:
         `Item` class
     """
     def create_object(self, i):
-        id, name, price, type = i
-        return Item(id, name, price, type)
+        id, name, price, type, qty = i
+        return Item(id, name, price, type, qty)
 
     """
         Fetch all data from `menus` TABLE in DATABASE
@@ -150,11 +150,12 @@ class EachData:
       to `EachData` class 
 """
 class Item:
-    def __init__(self, id, name, price, type):
+    def __init__(self, id, name, price, type, qty=1):
         self._id = id
         self._name = name
         self._price = price
         self._type = type
+        self._qty = qty
 
     @property
     def id(self):
@@ -171,9 +172,13 @@ class Item:
     @property
     def type(self):
         return self._type
+    
+    @property
+    def qty(self):
+        return self._qty
 
     def __repr__(self):
-        return f"{[self.id, self.name, self.price, self.type]}"
+        return f"{[self.id, self.name, self.price, self.type, self.qty]}"
 
     
 class Cart:
@@ -182,7 +187,7 @@ class Cart:
 
     def addItem(self, items):
         try:
-            self._list.append([items])
+            self._list.append(items)
         except:
             print('there were errors in Cart.addItem(arg) method')
 
@@ -191,11 +196,10 @@ class Cart:
             isFound = False
             #O(n*m)
             for i in self._list:
-                for j in i:
-                    if j.id == item_id:
-                        isFound = True
-                        self._list.remove(i)
-                        break
+                if i.id == item_id:
+                    isFound = True
+                    self._list.remove(i)
+                    break
                 if isFound:
                     break
         except:
@@ -206,12 +210,12 @@ class Cart:
         try:
             total = 0
             for i in self._list:
-                for j in i:
-                    total += j.price
+                #for j in i:
+                total += i.price
             return total
         except:
             print('there were errors in Cart.getTotal() method')
-
+    @property
     def showList(self):
         return self._list
 
@@ -393,8 +397,8 @@ class User(Person):
         super().__init__(firstname, surname, email, phone, password)
         self._id = int
         self._address = {'brgy': None, 
-                        'street': None,
                         'houseNo': None,
+                        'street': None,
                         'municipality': None,
                         'province': None
                         }
@@ -403,8 +407,8 @@ class User(Person):
 
     def set_address(self, brgy, street, houseNo, municipality, province):
         self._address = {'brgy': str(brgy),
-                        'street': str(street),
-                        'houseNo': str(houseNo),
+                        'houseNo': str(street),
+                        'street': str(houseNo),
                         'municipality': str(municipality),
                         'province': str(province)
                         }
@@ -427,7 +431,7 @@ class User(Person):
         if any(value is None for value in self._address.values()):
             return None, None, None, None, None
 
-        return self._address['brgy'], self._address['street'], self._address['houseNo'], self._address['municipality'], self._address['province']
+        return self._address['brgy'], self._address['houseNo'], self._address['street'], self._address['municipality'], self._address['province']
     
     def get_photo(self):
         return self._photo

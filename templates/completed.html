@@ -11,13 +11,15 @@
                 <th>Price</th>
                 <th>Section</th>
             </tr>
-            {% for cart in this_cart %}
+            
+            {% for i in this_cart %}
             <tr>
-                <td>{{ cart.name }}</td>
-                <td>{{ cart.price }}</td>
-                <td>{{ cart.type|capitalize }}</td>
+                <td>{{ i.name }}</td>
+                <td>{{ i.price }}</td>
+                <td>{{ i.type|capitalize }}</td>
             </tr>
             {% endfor %}
+            
         </table>
     </div>
 

@@ -22,14 +22,20 @@
             </thead>
             <tbody>
                 
-                {% for user in users %}
+                {% for user in accounts %}
                 <tr>
                     <td>{{ user.get_id }}</td>
                     <td>{{ user.get_firstname }}</td>
                     <td>{{ user.get_surname }}</td>
                     <td>{{ user.get_email }}</td>
                     <td>{{ user.get_phone }}</td>
-                    <td>{{ user.get_per_address }}</td>
+                    {% set brgy, houseNo, street, municipality, province = user.get_per_address %}
+                    <td><b>Baranggay:</b> <i>{{ brgy }}</i>,
+                        <b>Municipality:</b> <i>{{ municipality }}</i>,
+                        <b>Province :</b> <i>{{ province }}</i>,
+                        <b>Street:</b> <i>{{ street }}</i>,  
+                        <b>House #:</b> <i>{{ houseNo }}</i> 
+                         </td>
                     <td><button class="btn btn-primary">Update</button></td>
                 </tr>
                 {% endfor %}

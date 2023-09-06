@@ -27,23 +27,19 @@ def completed():
         baranggay,street, houseNo , municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
         address = f"Brgy: {baranggay}, Street: {street}, House Number: {houseNo}, Municipality: {municipality}, Province: {province}"
         isGcash = session.get('isGcash')
-        this_cart = []
         receipt_data = pnt.ReceiptsData()
         if isGcash == 0:
+            
             money = session.get('money_from_cus')
             total_price = int(cart.getTotal() + 20)
             change = money-total_price
             unique = pnt.ReceiptsData.generate_unique_id()
             receipt = pnt.Receipts(str(unique), str(name), str(address), str(phoneNo), int(money), str(), int(total_price))
             receipt_data.save_to_db(receipt)
-
-            for i in cart.showList():
-                for j in i:
-                    this_cart.append(j)
-            session.clear()
+            clear_browser_session()
             
-            return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
-        this_cart = []
+            return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
+        
         total_price = int(cart.getTotal() + 20)
         money = "PAID WITHIN GCASH"
         change = "PAID WITHIN GCASH"
@@ -52,11 +48,8 @@ def completed():
         receipt = pnt.Receipts(unique, name, address, phoneNo, int(), referenceNo, total_price)
         receipt_data.save_to_db(receipt)
 
-        for i in cart.showList():
-            for j in i:
-                this_cart.append(j)
-        session.clear()
-        return render_template('completed.html', this_cart=this_cart, total_price=total_price, change=change, money=money)
+        clear_browser_session()
+        return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
     return redirect(url_for('main.userPage'))
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
@@ -133,11 +126,11 @@ def toCheckout():
 def deliverSetup():
     if session.get('nameuser') or session.get('user-email') is not None:
         menu = menus.items
-        my_cart = cart.showList()
+        my_cart = cart.showList
         original_values = []
         for i in my_cart:
-            for j in i:
-                original_values.append(j)
+            #for j in i:
+            original_values.append(i)
         total = cart.getTotal()
         return render_template('deliver-setup.html', menu=menu, original_values=original_values, total=total)
     return redirect(url_for('main.userPage'))
@@ -212,7 +205,7 @@ def userSettings():
     g_user_data = pnt.UserData()
     user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
     if user_login is not None and 'user-email' in session:
-        brgy, street, houseNo, municipality, province = user_login.get_per_address
+        brgy, houseNo, street, municipality, province = user_login.get_per_address
         return render_template('user-settings.html', user_login=user_login, brgy=brgy, houseNo=houseNo, street=street, municipality=municipality, province=province)
     return redirect(url_for('main.userPage'))
 
@@ -221,7 +214,6 @@ def userDashboard():
     g_user_data = pnt.UserData()
     if 'user-email' in session:
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
-        print(user_login)
         
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email)
     elif 'nameuser' in session:
@@ -263,4 +255,8 @@ def userPage():
         return "Enter valid name" 
     return render_template("user-page.html", user_option_str=user_option_str)
 
+
+def clear_browser_session():
+    session.pop('isGcash', None)
+    session.pop('money_from_cus', None)
 
