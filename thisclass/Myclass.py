@@ -1,6 +1,7 @@
 import sqlite3
 from dotenv import load_dotenv
 import os
+from abc import ABC, abstractmethod
 
 load_dotenv()
 DATABASE = os.getenv('DATABASE_URL')
@@ -13,7 +14,7 @@ def checkIfInt(n):
         return int(n)
     except TypeError:
         return False
-class Person():
+class Person(ABC):
     def __init__(self, firstname, surname, email, phone, password):
         self._firstname = firstname
         self._surname = surname
@@ -21,34 +22,40 @@ class Person():
         self._phone = phone
         self._password = password
 
-    
+    @abstractmethod
     def set_id(self, id):
         self._id = id
 
-    
+    @abstractmethod
     def set_password(self, password):
         self._password = password
 
+    @abstractmethod
     @property
     def get_id(self):
         return self._id
     
+    @abstractmethod
     @property
     def get_firstname(self):
         return self._firstname
 
+    @abstractmethod
     @property
     def get_surname(self):
         return self._surname
     
+    @abstractmethod
     @property
     def get_email(self):
         return self._email
     
+    @abstractmethod
     @property
     def get_phone(self):
         return self._phone
     
+    @abstractmethod
     @property
     def get_password(self):
         return self._password
