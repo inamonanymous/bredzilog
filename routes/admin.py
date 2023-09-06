@@ -11,16 +11,27 @@ def logout():
     session.pop('email', None)
     return redirect(url_for('admin.adminPage'))
 
+@admin_bp.route('/admin/inventory', methods=['POST', 'GET'])
+def inventory():
+    if 'email' in session:
+        return render_template('admin-inventory.html', menu=pnt.EachData())
+
+@admin_bp.route('/admin/manageData', methods=['POST', 'GET'])
+def manageData():
+    if 'email' in session:
+        return render_template('manage-data.html', users=pnt.UserData().accounts)
+    return redirect(url_for('admin.adminPage'))
+
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
     g_admin_data = pnt.AdminData()
     if 'email' in session:
-        #try:
-        receipt_data = pnt.ReceiptsData()
+        try:
+            receipt_data = pnt.ReceiptsData()
             
-        return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal(), users=len(pnt.UserData().accounts))
-        """ except TypeError:
-            return "render_template('admin-dashboard.html', receipts=list)"""
+            return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal(), users=len(pnt.UserData().accounts))
+        except TypeError:
+            return "render_template('admin-dashboard.html', receipts=list)"
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/signedin', methods=['POST', 'GET'])
@@ -47,28 +58,3 @@ def signedin():
 def adminPage():
     return render_template("admin-page.html")
 
-"""@admin_bp.route('/admin/signedUp', methods=['POST'])
-def signedUp():
-    admin_data = pnt.AdminData()
-    if request.method == 'POST':
-        firstname = request.form.get('firstName')
-        surname = request.form.get('surname')
-        email = request.form.get('email')
-        phone = request.form.get('number')
-        password = request.form.get('password')
-        password2 = request.form.get('confirmPassword')
-
-        if admin_data.checkIfExists(email):
-            return "email already exists"
-        elif password==password2:
-            new_admin = pnt.Admin(firstname, surname, email, phone, password)
-            admin_data.save(new_admin)
-            return redirect(url_for('admin.adminPage'))
-
-        return render_template('sign-up-page.html')
-        
-    return render_template('sign-up-page.html')"""
-
-"""@admin_bp.route('/admin/signUpPage', methods=['POST', 'GET'])
-def signUpPage():
-    return render_template('sign-up-page.html')"""

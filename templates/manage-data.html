@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage-data.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="page-title">Customer Accounts</h1>
+    <div class="table-container">
+        <table class="table table-bordered custom-table">
+            <thead>
+                <tr>
+                    <th>I.D</th>
+                    <th>Firstname</th>
+                    <th>Surname</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.get_id }}</td>
+                    <td>{{ user.get_firstname }}</td>
+                    <td>{{ user.get_surname }}</td>
+                    <td>{{ user.get_email }}</td>
+                    <td>{{ user.get_phone }}</td>
+                    <td>{{ user.get_per_address }}</td>
+                    <td><button class="btn btn-primary">Update</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}"><button>Back</button></a>
+</div>
+{% endblock %}

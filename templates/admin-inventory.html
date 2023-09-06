@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-inventory.css') }}">
+{% endblock %}
+    
+{% block body %}
+
+<div class="grid-container">
+    <!-- Table 1 -->
+    <div class="card digital-card">
+        <div class="card-header">
+            Zilog Hits
+        </div>
+        <div class="card-body">
+            <table class="table digital-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in menu.get_item_per_type()['hits'] %}
+                    <tr>
+                        <td>{{ i.name }}</td>
+                        <td>{{ i.price }}</td>
+                        <td>0</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Table 2 -->
+    <div class="card digital-card">
+        <div class="card-header">
+            Afford Mo Zilog Ko
+        </div>
+        <div class="card-body">
+            <table class="table digital-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in menu.get_item_per_type()['afford'] %}
+                    <tr>
+                        <td>{{ i.name }}</td>
+                        <td>{{ i.price }}</td>
+                        <td>0</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Table 3 -->
+    <div class="card digital-card">
+        <div class="card-header">
+            Sizzling ala Carte
+        </div>
+        <div class="card-body">
+            <table class="table digital-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in menu.get_item_per_type()['carte'] %}
+                    <tr>
+                        <td>{{ i.name }}</td>
+                        <td>{{ i.price }}</td>
+                        <td>0</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Table 4 -->
+    <div class="card digital-card">
+        <div class="card-header">
+            Add-ons
+        </div>
+        <div class="card-body">
+            <table class="table digital-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in menu.get_item_per_type()['add_on'] %}
+                    <tr>
+                        <td>{{ i.name }}</td>
+                        <td>{{ i.price }}</td>
+                        <td>0</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<a href="{{ url_for('admin.dashboard') }}"><button>Back</button></a>
+{% endblock %}

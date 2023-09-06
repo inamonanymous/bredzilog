@@ -61,7 +61,7 @@ class Person():
 class EachData:
     def __init__(self):
         self.db = DATABASE
-        self.items = []
+        self._items = []
         self.fetch_from_db()
     
     """
@@ -107,9 +107,36 @@ class EachData:
         contains `Item` class instance that 
         fetched from database
     """
-    def getList(self):
-        return self.items
+    @property
+    def items(self):
+        return self._items
 
+
+    def get_item_per_type(self):
+        hits = []
+        afford = []
+        carte = []
+        add_on = []
+        my_dict = {
+            'hits': hits,
+            'afford': afford,
+            'carte': carte,
+            'add_on': add_on
+        }
+        
+        for i in self.items:
+            if 'Zilog Hits' == i.type:
+                hits.append(i)
+            elif 'Afford Mo Zilog Ko' == i.type:
+                afford.append(i)
+            elif 'Sizzling Ala Carte' == i.type:
+                carte.append(i)
+            elif 'add-on' == i.type:
+                add_on.append(i)
+        return my_dict
+
+
+                
 
     """
         String representation of this object.
@@ -124,10 +151,26 @@ class EachData:
 """
 class Item:
     def __init__(self, id, name, price, type):
-        self.id = id
-        self.name = name
-        self.price = price
-        self.type = type
+        self._id = id
+        self._name = name
+        self._price = price
+        self._type = type
+
+    @property
+    def id(self):
+        return self._id
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def price(self):
+        return self._price
+    
+    @property
+    def type(self):
+        return self._type
 
     def __repr__(self):
         return f"{[self.id, self.name, self.price, self.type]}"
