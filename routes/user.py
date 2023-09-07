@@ -126,34 +126,18 @@ def toCheckout():
 def deliverSetup():
     if session.get('nameuser') or session.get('user-email') is not None:
         menu = menus.items
-        my_cart = cart.showList
-        original_values = []
-        for i in my_cart:
-            #for j in i:
-            original_values.append(i)
         total = cart.getTotal()
-        return render_template('deliver-setup.html', menu=menu, original_values=original_values, total=total)
+        return render_template('deliver-setup.html', menu=menus, original_values=cart.showList[::-1], total=total)
     return redirect(url_for('main.userPage'))
 
-@user_bp.route('/deleteItem/<int:item_id>', methods=["GET"])
+@user_bp.route('/deleteItem/<int:item_id>', methods=["POST", "GET"])
 def deleteItem(item_id):
     cart.deleteItem(item_id)
     return redirect(url_for('main.deliverSetup'))
 
-@user_bp.route('/addCart', methods=["POST", "GET"])
-def addCart():
-    menu = menus.items
-    btn_val = int(request.form.get('add-cart'))
-    selected_product = None
-    for i in menu:
-        if i.id == btn_val:
-            selected_product = i
-            break
-    if selected_product:
-        cart.addItem(pnt.Item(selected_product.id, selected_product.name, selected_product.price, selected_product.type))
-        print(f"{selected_product.name} added to cart.")
-    else:
-        print("Invalid product ID.")
+@user_bp.route('/addCart/<int:item_id>', methods=["POST", "GET"])
+def addCart(item_id):
+    cart.addItem(item_id)
     return redirect(url_for('main.deliverSetup'))
 
 @user_bp.route('/signedUp', methods=['POST', 'GET'])

@@ -22,40 +22,40 @@ class Person(ABC):
         self._phone = phone
         self._password = password
 
-    @abstractmethod
+    #@abstractmethod
     def set_id(self, id):
         self._id = id
 
-    @abstractmethod
+    #@abstractmethod
     def set_password(self, password):
         self._password = password
 
-    @abstractmethod
+    #@abstractmethod
     @property
     def get_id(self):
         return self._id
     
-    @abstractmethod
+    #@abstractmethod
     @property
     def get_firstname(self):
         return self._firstname
 
-    @abstractmethod
+    #@abstractmethod
     @property
     def get_surname(self):
         return self._surname
     
-    @abstractmethod
+    #@abstractmethod
     @property
     def get_email(self):
         return self._email
     
-    @abstractmethod
+    #@abstractmethod
     @property
     def get_phone(self):
         return self._phone
     
-    @abstractmethod
+    #@abstractmethod
     @property
     def get_password(self):
         return self._password
@@ -109,6 +109,7 @@ class EachData:
                 return i.name, i.price, i.type
         return None, None, None
     
+
     """
         return `items` attribute that
         contains `Item` class instance that 
@@ -157,7 +158,7 @@ class EachData:
       to `EachData` class 
 """
 class Item:
-    def __init__(self, id, name, price, type, qty=1):
+    def __init__(self, id, name, price, type, qty):
         self._id = id
         self._name = name
         self._price = price
@@ -192,22 +193,20 @@ class Cart:
     def __init__(self):
         self._list = []
 
-    def addItem(self, items):
+    def addItem(self, item_id):
         try:
-            self._list.append(items)
+            for i in EachData().items:
+                if i.id == item_id:
+                    self._list.append(i)
+                    break
         except:
             print('there were errors in Cart.addItem(arg) method')
 
     def deleteItem(self, item_id):
         try:
-            isFound = False
-            #O(n*m)
             for i in self._list:
                 if i.id == item_id:
-                    isFound = True
                     self._list.remove(i)
-                    break
-                if isFound:
                     break
         except:
             print('there were errors in Cart.deleteItem(arg) method')
@@ -217,7 +216,6 @@ class Cart:
         try:
             total = 0
             for i in self._list:
-                #for j in i:
                 total += i.price
             return total
         except:
