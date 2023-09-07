@@ -126,23 +126,27 @@
     </div>
 </div>
 <div class="cart-container">
-    <form action="/toCheckout" method="POST">
-        <p>
-            Total Amount: $<i>{{ total }}</i>
-            <button type="submit" name="checkout" id="checkout" value="{{ total }}" class="font-monospace btn btn-success btn-rounded btn-md">
-                Proceed to Checkout
-            </button>
-        </p>
-    </form>
-    <ul>
-        {% for x in original_values %}
-        <li>
-            <form action="/deleteItem/{{ x.id }}" method="get">
-                {{ x.name }}, ${{ x.price }}
-                <button class="btn btn-danger btn-sm" type="submit" value="{{ x.id }}">Delete from Cart</button>
-            </form>
-        </li>
-        {% endfor %}
-    </ul>
+    <div>
+        <form action="/toCheckout" method="POST">
+            <p>
+                Total Amount: $<i>{{ total }}</i>
+                <button type="submit" name="checkout" id="checkout" value="{{ total }}" class="font-monospace btn btn-success btn-rounded btn-md">
+                    Proceed to Checkout
+                </button>
+            </p>
+        </form>
+        <ul>
+            {% for x in original_values %}
+            <li>
+                <form action="/deleteItem/{{ x.id }}" method="get">
+                    {{ x.name }}, ${{ x.price }}
+                    <button class="btn btn-danger btn-sm" type="submit" value="{{ x.id }}">Delete from Cart</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        
+    </div>
+    <a href="{{ url_for('main.userDashboard') }}"><button>Back to Dashboard</button></a>
 </div>
 {% endblock %}

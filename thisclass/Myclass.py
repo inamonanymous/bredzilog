@@ -119,7 +119,20 @@ class EachData:
     def items(self):
         return self._items
 
-
+    def decrement_qty(self, receipt):
+        conn = sqlite3.connect(self.db)
+        cursor = conn.cursor()
+        
+        for i in receipt.item:
+            for j in self.items:
+                if i.id == j.id:
+                    if i.qty > 0:
+                        j.minus_qty()
+                        cursor.execute('UPDATE menu SET quantity = ? WHERE id = ?', (j.qty, j.id))
+                        conn.commit()
+        
+        conn.close()
+        
     def get_item_per_type(self):
         hits = []
         afford = []
@@ -184,6 +197,10 @@ class Item:
     @property
     def qty(self):
         return self._qty
+
+    def minus_qty(self):
+        if self.qty > 0:
+            self._qty -= 1
 
     def __repr__(self):
         return f"{[self.id, self.name, self.price, self.type, self.qty]}"
@@ -456,14 +473,14 @@ class ReceiptsData:
         self.fetch_from_database()
 
     def create_object(self, i):
-        unique, name, address, phone, from_customer, referrenceNo, totalPrice = i
-        return Receipts(unique, name, address, phone, from_customer, referrenceNo, totalPrice)
+        unique, name, address, phone, from_customer, referrenceNo, totalPrice, item = i
+        return Receipts(unique, name, address, phone, from_customer, referrenceNo, totalPrice, item)
 
     def fetch_from_database(self) -> list:
         conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
 
-        cursor.execute('SELECT unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice FROM receipt ORDER BY id DESC')
+        cursor.execute('SELECT unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item FROM receipt ORDER BY id DESC')
         rows = cursor.fetchall()
 
         for i in rows:
@@ -486,14 +503,15 @@ class ReceiptsData:
             conn = sqlite3.connect(self.db)
             cursor = conn.cursor()
             
-            cursor.execute('INSERT INTO receipt (unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice) VALUES (?,?,?,?,?,?,?)', 
+            cursor.execute('INSERT INTO receipt (unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item) VALUES (?,?,?,?,?,?,?,?)', 
                         (receipt.unique,
                         receipt.name,
                         receipt.address,
                         receipt.phone,
                         receipt.from_customer,
                         receipt.referrenceNo,
-                        receipt.price,))
+                        receipt.price,
+                        str(receipt.item),))
             conn.commit()
             conn.close()
         except sqlite3.IntegrityError:
@@ -510,7 +528,7 @@ class ReceiptsData:
 
 
 class Receipts:
-    def __init__(self, unique, name, address, phone, from_customer, referrenceNo, price):
+    def __init__(self, unique, name, address, phone, from_customer, referrenceNo, price, item):
         self.db = DATABASE
         self.unique = unique
         self.name = name
@@ -519,6 +537,7 @@ class Receipts:
         self.from_customer = from_customer
         self.referrenceNo = referrenceNo
         self.price = price
+        self.item = item
 
     def __repr__(self) -> str:
         return f"""

@@ -34,8 +34,10 @@ def completed():
             total_price = int(cart.getTotal() + 20)
             change = money-total_price
             unique = pnt.ReceiptsData.generate_unique_id()
-            receipt = pnt.Receipts(str(unique), str(name), str(address), str(phoneNo), int(money), str(), int(total_price))
+            
+            receipt = pnt.Receipts(str(unique), str(name), str(address), str(phoneNo), int(money), str(), int(total_price), cart.showList)
             receipt_data.save_to_db(receipt)
+            menus.decrement_qty(receipt)
             clear_browser_session()
             
             return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
@@ -45,9 +47,10 @@ def completed():
         change = "PAID WITHIN GCASH"
         referenceNo = session.get('referenceNo')
         unique = pnt.ReceiptsData.generate_unique_id()
-        receipt = pnt.Receipts(unique, name, address, phoneNo, int(), referenceNo, total_price)
+        receipt = pnt.Receipts(unique, name, address, phoneNo, int(), referenceNo, total_price, cart.showList)
+        menus.decrement_qty(receipt)
         receipt_data.save_to_db(receipt)
-
+        
         clear_browser_session()
         return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
     return redirect(url_for('main.userPage'))
