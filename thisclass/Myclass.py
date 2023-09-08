@@ -28,6 +28,11 @@ class Person(ABC):
     def set_password(self, password):
         self._password = password
 
+    def set_contact(self, firstname, surname, phone):
+        self._firstname = firstname
+        self._surname = surname
+        self._phone = phone
+
     @property
     def get_id(self):
         return self._id
@@ -111,19 +116,29 @@ class EachData:
     def items(self):
         return self._items
 
-    def decrement_qty(self, receipt):
+    def set_qty(self, qty, id):
         conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
-        
-        for i in receipt.item:
-            for j in self.items:
-                if i.id == j.id:
-                    if i.qty > 0:
-                        j.minus_qty()
-                        cursor.execute('UPDATE menu SET quantity = ? WHERE id = ?', (j.qty, j.id))
-                        conn.commit()
-        
+        cursor.execute('UPDATE menu SET quantity = ? WHERE id = ?', (qty,id,))
+        conn.commit()
         conn.close()
+
+    def decrement_qty(self, receipt):
+        try:
+            conn = sqlite3.connect(self.db)
+            cursor = conn.cursor()
+            
+            for i in receipt.item:
+                for j in self.items:
+                    if i.id == j.id:
+                        if i.qty > 0:
+                            j.minus_qty()
+                            cursor.execute('UPDATE menu SET quantity = ? WHERE id = ?', (j.qty, j.id))
+                            conn.commit()
+            
+            conn.close()
+        except:
+            print('there were errors in EachData.decrement_qty')
         
     def get_item_per_type(self):
         hits = []
@@ -360,6 +375,14 @@ class UserData:
             print("there were errors in UserData.save(arg) method")
 
     
+    def updateContact(self, user):
+        conn = sqlite3.connect(self.db)
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET name = ?, surname = ?, phone = ? WHERE email = ?', (user.get_firstname, user.get_surname, user.get_phone, user.get_email))
+        conn.commit()
+        conn.close()
+        self.fetch_from_db()
+
     def saveAddress(self, user):
             try:
                 conn = sqlite3.connect(self.db)

@@ -12,12 +12,15 @@
             Zilog Hits
         </div>
         <div class="card-body">
+            <label for="toggle">Toggle Edit:</label>
+            <input type="checkbox" id="toggle">
             <table class="table digital-table">
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
+                        <th>Update</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,7 +28,12 @@
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td>{{ i.qty }}</td>
+                        <td id="qty{{ i.id }}">{{ i.qty }} 
+                           <input type="checkbox" id="checkbox{{ i.id }}">
+                        </td>
+                        <td>
+                            <button onclick="toggle('qty{{ i.id }}', this)">Edit</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -45,14 +53,18 @@
                         <th>Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
+                        <th>Update</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in menu.get_item_per_type()['afford'] %}
+                    {% for i in menu.get_item_per_type()['afford']%}
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td>{{ i.qty }}</td>
+                        <td id="qty{{ i.id }}">{{ i.qty }}</td>
+                        <td>
+                            <button onclick="toggle('qty{{ i.id }}',this)">Edit</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -72,6 +84,7 @@
                         <th>Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
+                        <th>Update</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,7 +92,10 @@
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td>{{ i.qty }}</td>
+                        <td id="qty{{ i.id }}">{{ i.qty }}</td>
+                        <td>
+                            <button onclick="toggle('qty{{ i.id }}', this)">Edit</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -99,6 +115,7 @@
                         <th>Name</th>
                         <th>Price</th>
                         <th>Quantity</th>
+                        <th>Update</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +123,10 @@
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td>{{ i.qty }}</td>
+                        <td id="qty{{ i.id }}">{{ i.qty }}</td>
+                        <td>
+                            <button onclick="toggle('qty{{ i.id }}', this)">Edit</button>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -115,4 +135,7 @@
     </div>
 </div>
 <a href="{{ url_for('admin.dashboard') }}"><button>Back</button></a>
+
+<script src="{{ url_for('static', filename='js/admin-inventory.js') }}"></script>
+
 {% endblock %}

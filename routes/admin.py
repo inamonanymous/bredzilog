@@ -14,17 +14,25 @@ def logout():
 @admin_bp.route('/admin/inventory', methods=['POST', 'GET'])
 def inventory():
     if 'email' in session:
-        return render_template('admin-inventory.html', menu=pnt.EachData())
+        menu = pnt.EachData()
+        return render_template('admin-inventory.html', menu=menu)
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/updateUserSettings', methods=['POST', 'GET'])
 def updateUserSettings():
-    if 'email' in session:
-        firstname, surname, email, phone, brgy, municipality, province, street, houseNo = request.form.get('firstname'), request.form.get('surname'), request.form.get('email'), request.form.get('phone'), request.form.get('brgy'), request.form.get('municipality'), request.form.get('province'), request.form.get('street'), request.form.get('houseNo')
-        if request.method == "POST":
-            pass
+    if 'email' in session and request.method == "POST" and 'user_data' in session:
+        user_data = pnt.UserData()
+        firstname, surname, phone, brgy, municipality, province, street, houseNo = request.form.get('firstname'), request.form.get('surname'), request.form.get('phone'), request.form.get('brgy'), request.form.get('municipality'), request.form.get('province'), request.form.get('street'), request.form.get('houseNo')
+        user_acc = user_data.getByEmail(str(session.get('user_data', "")))
+        user_acc.set_address(brgy, street, houseNo, municipality, province)
+        user_acc.set_contact(firstname, surname, phone)
 
-    return redirect(url_for('admin.adminPage'))
+        user_data.saveAddress(user_acc)
+        user_data.updateContact(user_acc)
+
+        return redirect(url_for('admin.dashboard'))
+
+    return redirect(url_for('admin.dashboard'))
         
 
 @admin_bp.route('/admin/update-user-id/<user_email>', methods=['POST', 'GET'])
@@ -32,9 +40,9 @@ def updateUserEmail(user_email):
     if 'email' in session:
         users = pnt.UserData()
         user = users.getByEmail(user_email)
-
+        session['user_data'] = str(user_email)
         return render_template('admin-update-users-form.html', user=user)
-    return redirect(url_for('main.index'))
+    return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/manageData', methods=['POST', 'GET'])
 def manageData():
