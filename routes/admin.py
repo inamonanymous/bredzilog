@@ -15,6 +15,26 @@ def logout():
 def inventory():
     if 'email' in session:
         return render_template('admin-inventory.html', menu=pnt.EachData())
+    return redirect(url_for('admin.adminPage'))
+
+@admin_bp.route('/admin/updateUserSettings', methods=['POST', 'GET'])
+def updateUserSettings():
+    if 'email' in session:
+        firstname, surname, email, phone, brgy, municipality, province, street, houseNo = request.form.get('firstname'), request.form.get('surname'), request.form.get('email'), request.form.get('phone'), request.form.get('brgy'), request.form.get('municipality'), request.form.get('province'), request.form.get('street'), request.form.get('houseNo')
+        if request.method == "POST":
+            pass
+
+    return redirect(url_for('admin.adminPage'))
+        
+
+@admin_bp.route('/admin/update-user-id/<user_email>', methods=['POST', 'GET'])
+def updateUserEmail(user_email):
+    if 'email' in session:
+        users = pnt.UserData()
+        user = users.getByEmail(user_email)
+
+        return render_template('admin-update-users-form.html', user=user)
+    return redirect(url_for('main.index'))
 
 @admin_bp.route('/admin/manageData', methods=['POST', 'GET'])
 def manageData():

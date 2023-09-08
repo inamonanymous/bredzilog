@@ -36,7 +36,11 @@
                         <b>Street:</b> <i>{{ street }}</i>,  
                         <b>House #:</b> <i>{{ houseNo }}</i> 
                          </td>
-                    <td><button class="btn btn-primary">Update</button></td>
+                    <td>
+                        <a href="{{ url_for('admin.updateUserEmail', user_email=user.get_email) }}">
+                            <button class="btn btn-primary">Update</button>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

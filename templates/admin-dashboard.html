@@ -29,8 +29,9 @@
             {% set from_customer = i.from_customer %}
             {% set referrenceNo = i.referrenceNo %}
             {% set price = i.price %}
+            {% set item = i.item %}
             <li>
-              <a href="javascript:void(0)" onclick="showPopUp('{{ unique|e }}', '{{ name|e }}', '{{ address|e }}', '{{ phone|e }}', '{{ from_customer|e }}', '{{ referrenceNo|e }}', '{{ price|e }}')">
+              <a href="javascript:void(0)" onclick="showPopUp('{{ unique|e }}', '{{ name|e }}', '{{ address|e }}', '{{ phone|e }}', '{{ from_customer|e }}', '{{ referrenceNo|e }}', '{{ price|e }}', '{{ item|e }}')">
                 {{ unique }}
               </a>
             </li>

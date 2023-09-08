@@ -22,40 +22,32 @@ class Person(ABC):
         self._phone = phone
         self._password = password
 
-    #@abstractmethod
     def set_id(self, id):
         self._id = id
 
-    #@abstractmethod
     def set_password(self, password):
         self._password = password
 
-    #@abstractmethod
     @property
     def get_id(self):
         return self._id
     
-    #@abstractmethod
     @property
     def get_firstname(self):
         return self._firstname
 
-    #@abstractmethod
     @property
     def get_surname(self):
         return self._surname
     
-    #@abstractmethod
     @property
     def get_email(self):
         return self._email
     
-    #@abstractmethod
     @property
     def get_phone(self):
         return self._phone
     
-    #@abstractmethod
     @property
     def get_password(self):
         return self._password

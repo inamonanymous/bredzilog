@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div>
+        <form action="/admin/updateUsers", method="post">
+            <label for="firstname">Firstname</label>
+            <input type="text" name="firstname" id="firstname" value="{{ user.get_firstname }}">
+            <br>
+            <label for="surname">Surname</label>
+            <input type="text" name="surname" id="surname" value="{{ user.get_surname }}">
+            <br>
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" value="{{ user.get_email }}">
+            <br>
+            <label for="phone">Phone</label>
+            <input type="text" name="phone" id="phone" value="{{ user.get_phone }}">
+            <br>
+            {% set brgy, municipality, province, street, houseNo = user.get_per_address %}
+            <label for="brgy">Baranggay</label>
+            <input type="text" name="brgy" id="brgy" value="{{ brgy }}">
+            <br>
+            <label for="municipality">Municipality</label>
+            <input type="text" name="municipality" id="municipality" value="{{ municipality }}">
+            <br>
+            <label for="province">Province</label>
+            <input type="text" name="province" id="province" value="{{ province }}">
+            <br>
+            <label for="street">Street</label>
+            <input type="text" name="street" id="street" value="{{ street }}">
+            <br>
+            <label for="houseNo">House #</label>
+            <input type="text" name="houseNo" id="houseNo" value="{{ houseNo }}" placeholder="Block and Lot if located at subdivision">
+            <br>
+            <input type="submit" value="Update User">
+            
+        </form>
+        <a href="{{ url_for('admin.manageData') }}">
+            <button>Back</button>
+        </a>
+    </div>
+{% endblock %}

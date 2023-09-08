@@ -135,13 +135,17 @@ def deliverSetup():
 
 @user_bp.route('/deleteItem/<int:item_id>', methods=["POST", "GET"])
 def deleteItem(item_id):
-    cart.deleteItem(item_id)
-    return redirect(url_for('main.deliverSetup'))
+    if 'user-email' or 'nameuser' in session:
+        cart.deleteItem(item_id)
+        return redirect(url_for('main.deliverSetup'))
+    return redirect(url_for('main.userPage'))
 
 @user_bp.route('/addCart/<int:item_id>', methods=["POST", "GET"])
 def addCart(item_id):
-    cart.addItem(item_id)
-    return redirect(url_for('main.deliverSetup'))
+    if 'user-email' or 'nameuser' in session:
+        cart.addItem(item_id)
+        return redirect(url_for('main.deliverSetup'))
+    return redirect(url_for('main.userPage'))
 
 @user_bp.route('/signedUp', methods=['POST', 'GET'])
 def signedUp():
