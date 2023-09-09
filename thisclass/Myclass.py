@@ -103,8 +103,8 @@ class EachData:
     def get_obj_by_id(self, id):
         for i in self.items:
             if i.id == id:
-                return i.name, i.price, i.type
-        return None, None, None
+                return i
+        return None
     
 
     """
@@ -116,10 +116,10 @@ class EachData:
     def items(self):
         return self._items
 
-    def set_qty(self, qty, id):
+    def set_qty(self, item):
         conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
-        cursor.execute('UPDATE menu SET quantity = ? WHERE id = ?', (qty,id,))
+        cursor.execute('UPDATE menu SET quantity = ? WHERE id = ?', (item.qty,item.id,))
         conn.commit()
         conn.close()
 
@@ -204,6 +204,10 @@ class Item:
     @property
     def qty(self):
         return self._qty
+
+    def set_qty(self, qty):
+        if self.qty > 0:
+            self._qty = qty
 
     def minus_qty(self):
         if self.qty > 0:

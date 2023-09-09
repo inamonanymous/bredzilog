@@ -1,4 +1,6 @@
 function showPopUp(unique, name, address, phone, from_customer, referrenceNo, price, item) {
+    var string = JSON.stringify(item)
+    var order = JSON.parse(string);
     var message = `
     Unique ID -> ${unique}
     Name -> ${name}
@@ -7,7 +9,7 @@ function showPopUp(unique, name, address, phone, from_customer, referrenceNo, pr
     From Customer -> ${from_customer}
     Reference No -> ${referrenceNo}
     Price -> ${price}
-    Item -> ${item}
+    Item -> ${order}
 `;
 alert(message);
 

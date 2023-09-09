@@ -1,19 +1,17 @@
-function toggle(cellId, checkId) {
-    var cell = document.getElementById(cellId);
-    
-    var checkbox = document.getElementById(checkId);
+function toggle(inputId, btnId, hiddenInputId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(btnId);
+    const hiddenInput = document.getElementById(hiddenInputId);
 
-    if (cell.getAttribute("contentEditable") !== "true") {
-        cell.setAttribute("contentEditable", "true");
-        cell.focus();
-        checkbox.disabled = true; // Disable the checkbox when editing
-    } else {
-        cell.setAttribute("contentEditable", "false");
-        checkbox.disabled = false; // Enable the checkbox after editing
+    if (input && btn && hiddenInput) {
+        if (hiddenInput.value === "0") {
+            input.removeAttribute('readonly');
+            btn.removeAttribute('disabled');
+            hiddenInput.value = "4096";
+        } else {
+            input.setAttribute('readonly', 'readonly');
+            btn.setAttribute('disabled', 'disabled');
+            hiddenInput.value = "0";
+        }
     }
-
-    document.getElementById(checkId).addEventListener("click", function () {
-        toggle("editableCell", "editCheckbox");
-    });
-
 }

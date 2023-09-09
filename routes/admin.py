@@ -11,6 +11,22 @@ def logout():
     session.pop('email', None)
     return redirect(url_for('admin.adminPage'))
 
+@admin_bp.route('/admin/setQuantity/<id>', methods=['POST', 'GET'])
+def setQuantity(id):
+    if 'email' in session:
+        menu = pnt.EachData()
+        qty, isChecked = request.form.get(f"qty{id}"), request.form.get(f"is_enabled{id}")
+        
+        if int(isChecked) == 4096:
+            if pnt.checkIfInt(qty):
+                item = menu.get_obj_by_id(int(id))
+                item.set_qty(qty)
+                menu.set_qty(item)
+                return redirect(url_for('admin.inventory'))
+            return redirect(url_for('admin.dashboard'))
+        print(isChecked)
+        return redirect(url_for('admin.inventory'))
+
 @admin_bp.route('/admin/inventory', methods=['POST', 'GET'])
 def inventory():
     if 'email' in session:

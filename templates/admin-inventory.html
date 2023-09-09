@@ -6,6 +6,7 @@
 {% block body %}
 
 <div class="grid-container">
+     
     <!-- Table 1 -->
     <div class="card digital-card">
         <div class="card-header">
@@ -13,8 +14,8 @@
         </div>
         <div class="card-body">
             <label for="toggle">Toggle Edit:</label>
-            <input type="checkbox" id="toggle">
-            <table class="table digital-table">
+           
+            <table class="table digital-table" id="table1">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -28,12 +29,18 @@
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td id="qty{{ i.id }}">{{ i.qty }} 
-                           <input type="checkbox" id="checkbox{{ i.id }}">
-                        </td>
-                        <td>
-                            <button onclick="toggle('qty{{ i.id }}', this)">Edit</button>
-                        </td>
+                        <form action="/admin/setQuantity/{{ i.id }}" method="post">
+                            <td style="width: 15%; text-align: center;">
+                                <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
+                            </td>
+                            <td>
+                                <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
+                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <label>
+                                    <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
+                                </label>
+                            </td>
+                        </form>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -61,10 +68,18 @@
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td id="qty{{ i.id }}">{{ i.qty }}</td>
-                        <td>
-                            <button onclick="toggle('qty{{ i.id }}',this)">Edit</button>
-                        </td>
+                        <form action="/admin/setQuantity/{{ i.id }}" method="post">
+                            <td style="width: 15%; text-align: center;">
+                                <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
+                            </td>
+                            <td>
+                                <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
+                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <label>
+                                    <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
+                                </label>
+                            </td>
+                        </form>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -92,10 +107,18 @@
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td id="qty{{ i.id }}">{{ i.qty }}</td>
-                        <td>
-                            <button onclick="toggle('qty{{ i.id }}', this)">Edit</button>
-                        </td>
+                        <form action="/admin/setQuantity/{{ i.id }}" method="post">
+                            <td style="width: 15%; text-align: center;">
+                                <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
+                            </td>
+                            <td>
+                                <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
+                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <label>
+                                    <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
+                                </label>
+                            </td>
+                        </form>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -123,10 +146,18 @@
                     <tr>
                         <td>{{ i.name }}</td>
                         <td>{{ i.price }}</td>
-                        <td id="qty{{ i.id }}">{{ i.qty }}</td>
-                        <td>
-                            <button onclick="toggle('qty{{ i.id }}', this)">Edit</button>
-                        </td>
+                        <form action="/admin/setQuantity/{{ i.id }}" method="post">
+                            <td style="width: 15%; text-align: center;">
+                                <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
+                            </td>
+                            <td>
+                                <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
+                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <label>
+                                    <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
+                                </label>
+                            </td>
+                        </form>
                     </tr>
                     {% endfor %}
                 </tbody>
