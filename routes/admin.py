@@ -67,6 +67,11 @@ def manageData():
         return render_template('manage-data.html', accounts=users.accounts)
     return redirect(url_for('admin.adminPage'))
 
+@admin_bp.route('/admin/receipt', methods=['POST', 'GET'])
+def receipt():
+    receipt_data = pnt.ReceiptsData()
+    return render_template('receipt.html', receipt_data=receipt_data)
+
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
     g_admin_data = pnt.AdminData()

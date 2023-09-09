@@ -31,7 +31,8 @@
             {% set price = i.price %}
             {% set item = i.item %}
             <li>
-              <a href="javascript:void(0)" onclick="showPopUp('{{ unique|e }}', '{{ name|e }}', '{{ address|e }}', '{{ phone|e }}', '{{ from_customer|e }}', '{{ referrenceNo|e }}', '{{ price|e }}', '{{ item|e }}')">
+              <a href="{{ url_for('admin.receipt') }}" onclick="showPopUp('{{ unique|e }}', '{{ name|e }}', '{{ address|e }}', '{{ phone|e }}', '{{ from_customer|e }}', '{{ referrenceNo|e }}', '{{ price|e }}', '{{ item|e }}')">
+                
                 {{ unique }}
               </a>
             </li>
