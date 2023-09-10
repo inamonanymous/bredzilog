@@ -80,13 +80,16 @@
                     <input type="text" class="form-control" name="phone" id="inputPhone" pattern="[0-9]+" minlength="10" maxlength="15" required>
                     
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-outline-primary">Submit</button>
             </form>
             {% endif %}
         </div>
         {% else %}
-            <h2>You are ${{ short }} short. Please pay equal or higher than to total amount</h2>
+            <h2>You are ₱{{ short }} short. Please pay equal or higher than to total amount</h2>
         {% endif %}
+    
+        <a href="{{ url_for('main.deliverSetup') }}">
+            <button class="btn btn-outline-secondary">Back</button>
+        </a>
     </div>
-
 {% endblock %}

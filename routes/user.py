@@ -35,24 +35,28 @@ def completed():
             change = money-total_price
             unique = pnt.ReceiptsData.generate_unique_id()
             
-            receipt = pnt.Receipts(str(unique), str(name), str(address), str(phoneNo), int(money), str(), int(total_price), cart.showList)
-            receipt_data.save_to_db(receipt)
-            menus.decrement_qty(receipt)
-            clear_browser_session()
-            
-            return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
+            if cart.showList:
+                receipt = pnt.Receipts(int(), str(unique), str(name), str(address), str(phoneNo), int(money), str(), int(total_price), cart.showList)
+                receipt_data.save_to_db(receipt)
+                menus.decrement_qty(receipt)
+                clear_browser_session()
+                
+                return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
         
+            return redirect(url_for('main.deliverSetup'))
         total_price = int(cart.getTotal() + 20)
         money = "PAID WITHIN GCASH"
         change = "PAID WITHIN GCASH"
         referenceNo = session.get('referenceNo')
         unique = pnt.ReceiptsData.generate_unique_id()
-        receipt = pnt.Receipts(unique, name, address, phoneNo, int(), referenceNo, total_price, cart.showList)
-        menus.decrement_qty(receipt)
-        receipt_data.save_to_db(receipt)
-        
-        clear_browser_session()
-        return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
+        if cart.showList:
+            receipt = pnt.Receipts(int(), unique, name, address, phoneNo, int(), referenceNo, total_price, cart.showList)
+            menus.decrement_qty(receipt)
+            receipt_data.save_to_db(receipt)
+            
+            clear_browser_session()
+            return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
+        return redirect(url_for('main.deliverSetup'))
     return redirect(url_for('main.userPage'))
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
@@ -89,7 +93,7 @@ def processPayment():
                 
                 change = money-total_price
                 divString = f"""<h1>THANK YOU FOR CHOOSING US</h1>
-                                <h5>Your Change is ${ change }</h5>
+                                <h5>Your Change is ₱{ change }</h5>
                                 <h5>Expect this amount from the rider</h5>
                             """
                 return render_template('processed.html',divString=divString, nameuser=nameuser, myBool=True, user_login=user_login)
@@ -103,12 +107,12 @@ def formOfPayment():
     if 'cash-on-del' in request.form:
         session["isGcash"] = 0
         formString = """
-                        <form action="/processPayment" method="post"><!-- Cash-on-Delivery form fields --><input type="number" name="processingField" placeholder="Enter cash amount" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit Cash" name="fromCash" class="font-monospace btn btn-success btn-rounded btn-md mt-3"></form>
+                        <form action="/processPayment" method="post"><!-- Cash-on-Delivery form fields --><input type="number" name="processingField" placeholder="Enter cash amount" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit Cash" name="fromCash" class="font-monospace btn btn-outline-success btn-rounded btn-md mt-3"></form>
                      """
     elif 'g-cash' in request.form:
         session["isGcash"] = 1
         formString = """
-                        <img src="../static/img/g-cash.jpg" alt="Admin's G-Cash QR" width="230" height="225"><form action="/processPayment" method="post" style="margin-top: 10px"><!-- G-Cash form fields --><input type="number" name="processingField" placeholder="Enter Reference Number" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit G-Cash" name="fromGcash" class="font-monospace btn btn-primary btn-rounded btn-md mt-3"></form>
+                        <img src="../static/img/g-cash.jpg" alt="Admin's G-Cash QR" width="230" height="225"><form action="/processPayment" method="post" style="margin-top: 10px"><!-- G-Cash form fields --><input type="number" name="processingField" placeholder="Enter Reference Number" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit G-Cash" name="fromGcash" class="font-monospace btn btn-outline-primary btn-rounded btn-md mt-3"></form>
                      """
     if formString:
         session['formString'] = formString
@@ -176,13 +180,15 @@ def signUpPage():
 @user_bp.route('/updateSettings', methods=['POST', 'GET'])
 def updateSettings():
     g_user_data = pnt.UserData()
-    brgy, street, houseNo, municipality, province = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province')
+    name, surname, phone, brgy, street, houseNo, municipality, province = request.form.get('name'), request.form.get('surname'), request.form.get('phone'), request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province')
     if request.method == "POST":
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
         if user_login is not None and 'user-email' in session:
+            user_login.set_contact(name, surname, phone)
             user_login.set_address(brgy, street, houseNo, municipality, province)
             print(user_login)
             print(str(user_login.get_address))
+            g_user_data.updateContact(user_login)
             g_user_data.saveAddress(user_login)
             
             return redirect(url_for('main.userDashboard'))
@@ -234,7 +240,7 @@ def userPage():
     if request.form.get('signIn'):
         return render_template('user-signin.html')
     user_option_str = """
-                        <form action="/userPage" method="post"> <input type="text" name="nameuser" id="nameuser"><button class="btn btn-danger mt-2" type="submit">Enter</button></form>
+                        <form action="/userPage" method="post"> <input type="text" name="nameuser" id="nameuser" class="form-control" style="width: 30%;"><br><button class="btn btn-outline-success mt-2" type="submit">Enter</button></form>
                       """
     nameuser = request.form.get('nameuser')
     if nameuser is not None:

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 import thisclass.Myclass as pnt
+import ast
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -46,7 +47,7 @@ def updateUserSettings():
         user_data.saveAddress(user_acc)
         user_data.updateContact(user_acc)
 
-        return redirect(url_for('admin.dashboard'))
+        return redirect(url_for('admin.manageData'))
 
     return redirect(url_for('admin.dashboard'))
         
@@ -67,10 +68,14 @@ def manageData():
         return render_template('manage-data.html', accounts=users.accounts)
     return redirect(url_for('admin.adminPage'))
 
-@admin_bp.route('/admin/receipt', methods=['POST', 'GET'])
-def receipt():
+@admin_bp.route('/admin/receipt/<id>', methods=['POST', 'GET'])
+def receipt(id):
     receipt_data = pnt.ReceiptsData()
-    return render_template('receipt.html', receipt_data=receipt_data)
+    receipt = receipt_data.get_by_id(int(id))
+    if receipt is None:
+        return redirect(url_for('admin.dashboard'))
+    mylist = ast.literal_eval(receipt.item)
+    return render_template('receipt.html', receipt=receipt, orders=mylist)
 
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
@@ -78,7 +83,6 @@ def dashboard():
     if 'email' in session:
         try:
             receipt_data = pnt.ReceiptsData()
-            
             return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal(), users=len(pnt.UserData().accounts))
         except TypeError:
             return "render_template('admin-dashboard.html', receipts=list)"

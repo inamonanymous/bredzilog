@@ -6,7 +6,11 @@
               <legend>User Information</legend>
               <p class="lead "><b>Account Email:</b> <i>{{ user_login.get_email }}</i></b></p>
               <label for="name">Name:</label>
-              <input type="text" id="name" name="name" value="{{ user_login.get_firstname }} {{ user_login.get_surname }}">
+              <input type="text" id="name" name="name" value="{{ user_login.get_firstname }} ">
+              <br>
+              <label for="surname">Surname:</label>
+              <input type="text" id="surname" name="surname" value="{{ user_login.get_surname }}">
+
               <br>
               
               <label for="phone">Phone:</label>

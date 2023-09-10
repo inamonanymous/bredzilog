@@ -28,14 +28,14 @@
                     {% for i in menu.get_item_per_type()['hits'] %}
                     <tr>
                         <td>{{ i.name }}</td>
-                        <td>{{ i.price }}</td>
+                        <td>₱{{ i.price }}</td>
                         <form action="/admin/setQuantity/{{ i.id }}" method="post">
                             <td style="width: 15%; text-align: center;">
                                 <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
                             </td>
                             <td>
                                 <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
-                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <button type="submit" id="submit_btn{{ i.id }}" class="btn btn-outline-warning" disabled>Edit</button>
                                 <label>
                                     <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
                                 </label>
@@ -67,14 +67,14 @@
                     {% for i in menu.get_item_per_type()['afford']%}
                     <tr>
                         <td>{{ i.name }}</td>
-                        <td>{{ i.price }}</td>
+                        <td>₱{{ i.price }}</td>
                         <form action="/admin/setQuantity/{{ i.id }}" method="post">
                             <td style="width: 15%; text-align: center;">
                                 <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
                             </td>
                             <td>
                                 <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
-                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <button class="btn btn-outline-warning" type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
                                 <label>
                                     <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
                                 </label>
@@ -106,14 +106,14 @@
                     {% for i in menu.get_item_per_type()['carte'] %}
                     <tr>
                         <td>{{ i.name }}</td>
-                        <td>{{ i.price }}</td>
+                        <td>₱{{ i.price }}</td>
                         <form action="/admin/setQuantity/{{ i.id }}" method="post">
                             <td style="width: 15%; text-align: center;">
                                 <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
                             </td>
                             <td>
                                 <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
-                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <button class="btn btn-outline-warning" type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
                                 <label>
                                     <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
                                 </label>
@@ -145,14 +145,14 @@
                     {% for i in menu.get_item_per_type()['add_on'] %}
                     <tr>
                         <td>{{ i.name }}</td>
-                        <td>{{ i.price }}</td>
+                        <td>₱{{ i.price }}</td>
                         <form action="/admin/setQuantity/{{ i.id }}" method="post">
                             <td style="width: 15%; text-align: center;">
                                 <input type="text" value="{{ i.qty }}" id="qty{{ i.id }}" readonly name="qty{{ i.id }}" style="width: 45%; text-align: center;">
                             </td>
                             <td>
                                 <input type="hidden" id="hidden_input{{ i.id }}" name="is_enabled{{ i.id }}" value="0" style="display: none;">
-                                <button type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
+                                <button class="btn btn-outline-warning" type="submit" id="submit_btn{{ i.id }}" disabled>Edit</button>
                                 <label>
                                     <input type="checkbox" id="checkbox{{ i.id }}" onclick="toggle('qty{{ i.id }}', 'submit_btn{{ i.id }}', 'hidden_input{{ i.id }}')"> Enable Editing
                                 </label>
@@ -165,7 +165,7 @@
         </div>
     </div>
 </div>
-<a href="{{ url_for('admin.dashboard') }}"><button>Back</button></a>
+<a href="{{ url_for('admin.dashboard') }}"><button class="btn btn-secondary">Back</button></a>
 
 <script src="{{ url_for('static', filename='js/admin-inventory.js') }}"></script>
 

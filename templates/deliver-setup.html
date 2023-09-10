@@ -3,12 +3,12 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/deliver-setup.css') }}">
 {% endblock %}
 {% block body %}
-<div class="container">
+<div class="container text-success">
     <div class="row">
         <div class="col-md-12">
             <div class="transparent-div">
-                <h2>Zilog Hits</h2>
-                <table class="table-responsive">
+                <h2 class="text-primary">Zilog Hits</h2>
+                <table class="table-responsive text-light">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -20,7 +20,7 @@
                         {% for i in menu.get_item_per_type()['hits'] %}
                         <tr>
                             <td>{{ i.name }}</td>
-                            <td>{{ i.price }}</td>
+                            <td>₱{{ i.price }}</td>
                             <td>{{ i.qty }}</td>
                             <td scope="row" colspan="2" class="font-monospace">
                                 <form action="/addCart/{{ i.id }}" method="POST">
@@ -37,8 +37,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="transparent-div">
-                <h2>Afford mo Zilog ko</h2>
-                <table class="table-responsive">
+                <h2 class="text-primary">Afford mo Zilog ko</h2>
+                <table class="table-responsive text-light">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -50,7 +50,7 @@
                         {% for i in menu.get_item_per_type()['afford'] %}
                         <tr>
                             <td>{{ i.name }}</td>
-                            <td>{{ i.price }}</td>
+                            <td>₱{{ i.price }}</td>
                             <td>{{ i.qty }}</td>
                             <td scope="row" colspan="2" class="font-monospace">
                                 <form action="/addCart/{{ i.id }}" method="POST">
@@ -67,8 +67,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="transparent-div">
-                <h2>Sizzling ala Carte</h2>
-                <table class="table-responsive">
+                <h2 class="text-primary">Sizzling ala Carte</h2>
+                <table class="table-responsive text-light">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -80,7 +80,7 @@
                         {% for i in menu.get_item_per_type()['carte'] %}
                         <tr>
                             <td>{{ i.name }}</td>
-                            <td>{{ i.price }}</td>
+                            <td>₱{{ i.price }}</td>
                             <td>{{ i.qty }}</td>
                             <td scope="row" colspan="2" class="font-monospace">
                                 <form action="/addCart/{{ i.id }}" method="POST">
@@ -97,8 +97,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="transparent-div">
-                <h2>Add-Ons</h2>
-                <table class="table-responsive">
+                <h2 class="text-primary">Add-Ons</h2>
+                <table class="table-responsive text-light">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -110,7 +110,7 @@
                         {% for i in menu.get_item_per_type()['add_on'] %}
                         <tr>
                             <td>{{ i.name }}</td>
-                            <td>{{ i.price }}</td>
+                            <td>₱{{ i.price }}</td>
                             <td>{{ i.qty }}</td>
                             <td scope="row" colspan="2" class="font-monospace">
                                 <form action="/addCart/{{ i.id }}" method="POST">
@@ -125,28 +125,28 @@
         </div>
     </div>
 </div>
-<div class="cart-container">
+<div class="cart-container text-primary">
     <div>
         <form action="/toCheckout" method="POST">
-            <p>
-                Total Amount: $<i>{{ total }}</i>
-                <button type="submit" name="checkout" id="checkout" value="{{ total }}" class="font-monospace btn btn-success btn-rounded btn-md">
+            <p class="text-primary">
+                Total Amount: ₱<i>{{ total }}</i>
+                <button type="submit" name="checkout" id="checkout" value="{{ total }}" class="font-monospace btn btn-outline-success btn-rounded btn-md">
                     Proceed to Checkout
                 </button>
             </p>
         </form>
         <ul>
             {% for x in original_values %}
-            <li>
+            <li class="text-light">
                 <form action="/deleteItem/{{ x.id }}" method="get">
-                    {{ x.name }}, ${{ x.price }}
-                    <button class="btn btn-danger btn-sm" type="submit" value="{{ x.id }}">Delete from Cart</button>
+                    {{ x.name }}, ₱{{ x.price }}
+                    <button class="btn btn-outline-danger" type="submit" value="{{ x.id }}">Delete from Cart</button>
                 </form>
             </li>
             {% endfor %}
         </ul>
         
     </div>
-    <a href="{{ url_for('main.userDashboard') }}"><button>Back to Dashboard</button></a>
+    <a href="{{ url_for('main.userDashboard') }}"><button class="btn btn-outline-secondary">Back to Dashboard</button></a>
 </div>
 {% endblock %}

@@ -1,0 +1,33 @@
+.outer-container {
+    /* Replace with your background image URL */
+    background-color: rgba(112, 33, 33, 0.7); /* Black background with some transparency */
+    color: #ccc; /* White text to blend with the black background */
+    padding: 20px; /* Add some padding for spacing */
+}
+
+/* Style for the inner container div (to make the table scrollable) */
+.inner-container {
+    max-height: 400px; /* Set the maximum height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+}
+
+/* Style for the outer table */
+.outer-table {
+    width: 100%;
+}
+
+/* Style for the inner table */
+.inner-table {
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+/* Style for table headers */
+.inner-table th {
+    background-color: #f5f5f5;
+}
+
+/* Style for table rows */
+.inner-table tr {
+    border-bottom: 1px solid #ddd;
+}

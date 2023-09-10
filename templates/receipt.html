@@ -1,4 +1,9 @@
-<div class="container mt-5">
+{% extends "layout.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/receipt.css') }}">
+{% endblock %}
+{% block body %}
+<div class="outer-container mt-5">
     <div class="row">
         <div class="col">
             <h2 class="text-center">Receipt</h2>
@@ -6,51 +11,88 @@
     </div>
     <div class="row">
         <div class="col">
-            <table class="table">
+            <table class="table outer-table">
                 <thead>
                     <tr>
-                        <th>Item</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Orders</th>
+                        <th>Key</th>
+                        <th>Value</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in receipt_data.transactions %}
+                    
                     <tr>
-                        <td>Item {{ i.unique }}</td>
-                        <td>{{ i.name }}</td>
-                        <td>{{ i.price }}</td>
-                        {% for j in i.item %}
-                        <td>{{ j }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                        <td>Item 2</td>
-                        <td>1</td>
-                        <td>$15.00</td>
-                        <td>$15.00</td>
+                        <td>Item</td>
+                             <td>{{ receipt.unique }}</td>
                     </tr>
                     <tr>
-                        <td>Item 3</td>
-                        <td>3</td>
-                        <td>$8.00</td>
-                        <td>$24.00</td>
+                        <td>User Name</td>
+                        <td>{{ receipt.name }}</td>
                     </tr>
+                    
+                    <tr>
+                        <td>Address</td>
+                        <td>{{ receipt.address }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Phone</td>
+                        <td>{{ receipt.phone }}</td>
+                    </tr>
+
+                    
+
+                    {% if receipt.from_customer == 0 %}
+                    <tr>
+                        <td>Referrence Number</td>
+                        <td>{{ receipt.referrenceNo }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td>Received</td>
+                        <td>{{ receipt.from_customer }}</td>
+                    </tr>
+                    {% endif %}
+
+                    
+
+                    <tr>
+                        <td>Orders</td>
+                            <td>
+                            <table class="table inner-table">
+                                <thead>
+                                    <th>Id</th>
+                                    <th>Item name</th>
+                                    <th>Price</th>
+                                </thead>
+                                <tbody>
+                                    {% for i in orders %}
+                                        <tr>
+                                            <td>{{ i[0] }}</td>
+                                            <td>{{ i[1] }}</td>
+                                            <td>₱{{ i[2] }}</td>
+                                        </tr>
+                                        
+                                    {% endfor %}
+                                    
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>+Delivery Fee</th>
+                                        <th></th>
+                                        <th>₱20</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        
+                        </td>
+                    </tr>
+                    
+                        
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3" class="text-right">Subtotal:</td>
-                        <td>$59.00</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="text-right">Tax (10%):</td>
-                        <td>$5.90</td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="text-right">Total:</td>
-                        <td>$64.90</td>
+                        <th>Total Price</td>
+                        <th>₱{{ receipt.price }}</th>
                     </tr>
                 </tfoot>
             </table>
@@ -61,4 +103,8 @@
             <p>Thank you for your purchase!</p>
         </div>
     </div>
+    <a href="{{ url_for('admin.dashboard') }}">
+        <button class="btn btn-outline-secondary">Back</button>
+    </a>
 </div>
+{% endblock %}

@@ -1,5 +1,5 @@
 body {
-  background-image: url('../img/reggae.jpg');
+  
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -18,8 +18,9 @@ body {
   gap: 20px; /* Adjust the gap as needed */
   width: 70%;
   float: left;
-  max-height: 500px;
+  max-height: 600px;
   overflow-y: auto;
+  
 }
 
 .container::-webkit-scrollbar {
@@ -27,7 +28,7 @@ body {
 }
 
 .container::-webkit-scrollbar-thumb {
-  background-color: #15fd00; /* Color of the scrollbar thumb */
+  background-color: green; /* Color of the scrollbar thumb */
   border-radius: 3px; /* Rounded corners for the thumb */
 }
 
@@ -48,9 +49,24 @@ body {
   padding: 20px;
   height: 300px;
   position: fixed;
-  top: 20px;
+  bottom: 20px; /* Place the container at the bottom */
   right: 20px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-  
   overflow: auto;
+}
+
+/* Style the scrollbar track */
+.cart-container::-webkit-scrollbar {
+  width: 10px; /* Adjust the width as needed */
+}
+
+/* Style the scrollbar thumb */
+.cart-container::-webkit-scrollbar-thumb {
+  background-color: green; /* Default color */
+  transition: background-color 0.3s; /* Add a transition effect */
+}
+
+/* Change the thumb color on hover */
+.cart-container::-webkit-scrollbar-thumb:hover {
+  background-color: #d31010;
 }
