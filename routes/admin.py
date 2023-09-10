@@ -72,10 +72,16 @@ def manageData():
 def receipt(id):
     receipt_data = pnt.ReceiptsData()
     receipt = receipt_data.get_by_id(int(id))
+<<<<<<< HEAD
     if receipt is None:
         return redirect(url_for('admin.dashboard'))
     mylist = ast.literal_eval(receipt.item)
     return render_template('receipt.html', receipt=receipt, orders=mylist)
+=======
+    
+
+    return render_template('receipt.html', receipt=receipt)
+>>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
 
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():

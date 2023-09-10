@@ -1,9 +1,15 @@
 {% extends "layout.html" %}
 {% block styles %}
+<<<<<<< HEAD
     <link rel="stylesheet" href="{{ url_for('static', filename='css/receipt.css') }}">
 {% endblock %}
 {% block body %}
 <div class="outer-container mt-5">
+=======
+{% endblock %}
+{% block body %}
+<div class="container mt-5">
+>>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
     <div class="row">
         <div class="col">
             <h2 class="text-center">Receipt</h2>
@@ -15,6 +21,11 @@
                 <thead>
                     <tr>
                         <th>Key</th>
+<<<<<<< HEAD
+=======
+                        
+                        
+>>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
                         <th>Value</th>
                     </tr>
                 </thead>
@@ -24,12 +35,18 @@
                         <td>Item</td>
                              <td>{{ receipt.unique }}</td>
                     </tr>
+<<<<<<< HEAD
                     <tr>
                         <td>User Name</td>
+=======
+                    <tr>User Name
+                        <td>Name</td>
+>>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
                         <td>{{ receipt.name }}</td>
                     </tr>
                     
                     <tr>
+<<<<<<< HEAD
                         <td>Address</td>
                         <td>{{ receipt.address }}</td>
                     </tr>
@@ -45,9 +62,14 @@
                     <tr>
                         <td>Referrence Number</td>
                         <td>{{ receipt.referrenceNo }}</td>
+=======
+                        <td>Total Price</td>
+                        <td>{{ receipt.price }}</td>
+>>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
                     </tr>
                     {% else %}
                     <tr>
+<<<<<<< HEAD
                         <td>Received</td>
                         <td>{{ receipt.from_customer }}</td>
                     </tr>
@@ -93,7 +115,24 @@
                     <tr>
                         <th>Total Price</td>
                         <th>₱{{ receipt.price }}</th>
+=======
+                        <td>Orders</td>
+                        <td>{{ receipt.item }}</td>
                     </tr>
+                        
+                        
+                        
+                        
+                        <td>{% for i in receipt.item %}
+                            {{i.showList}}
+                        {% endfor %}
+                    </td>
+>>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
+                    </tr>
+                    
+                </tbody>
+                <tfoot>
+                    
                 </tfoot>
             </table>
         </div>
@@ -103,8 +142,11 @@
             <p>Thank you for your purchase!</p>
         </div>
     </div>
+<<<<<<< HEAD
     <a href="{{ url_for('admin.dashboard') }}">
         <button class="btn btn-outline-secondary">Back</button>
     </a>
+=======
+>>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
 </div>
 {% endblock %}
