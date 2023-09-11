@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+<div>
+    <form action="/admin/updateAdminSettings" method="post">
+        <label for="name">First Name</label>
+        <input type="text"name="name" id="name" value="{{ admin.get_firstname }}">
+        <br>
+        <label for="surname">Surname</label>
+        <input type="text"name="surname" id="surname" value="{{ admin.get_surname }}">
+        <br>
+        <label for="phone">Phone Number</label>
+        <input type="text"name="phone" id="phone" value="{{ admin.get_phone }}">
+        <br>
+        <label for="email">Email</label>
+        <input type="text"name="email" id="email" value="{{ admin.get_email }}">
+        <br>
+        <input type="submit">
+    </form>
+    <a href="{{ url_for('admin.dashboard') }}">
+        <button>Back</button>
+    </a>
+</div>
+{% endblock %}

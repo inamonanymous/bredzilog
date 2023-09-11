@@ -9,7 +9,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container-lg">
           <a href="{{ url_for('admin.inventory') }}"><button class="btn btn-info ml-auto">Inventory</button></a>
-          <button class="btn btn-dark ml-2">Settings</button>
+          <a href="{{ url_for('admin.adminSettings') }}"><button class="btn btn-dark ml-2">Settings</button></a>
           <a href="{{ url_for('admin.manageData') }}"><button class="btn btn-info ml-2">Manage Data</button></a>
           <a href="{{ url_for('admin.logout') }}"><button class="btn btn-outline-danger btn-close ml-2">Logout</button></a>
         </div>
@@ -32,10 +32,6 @@
             {% set item = i.item %}
             <li>
               <a href="{{ url_for('admin.receipt', id=i.id) }}">
-<<<<<<< HEAD
-=======
-                {{ i.id }}
->>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
                 {{ unique }}
               </a>
             </li>

@@ -68,25 +68,43 @@ def manageData():
         return render_template('manage-data.html', accounts=users.accounts)
     return redirect(url_for('admin.adminPage'))
 
+@admin_bp.route('/admin/updateAdminSettings', methods=['POST', 'GET'])
+def adminUpdateSettings():
+    g_admin_data = pnt.AdminData()
+    g_admin_login = g_admin_data.getByEmail(str(session.get('email', "")))
+    if 'email' in session and g_admin_login:
+        name, surname, phone, email = request.form.get('name'), request.form.get('surname'), request.form.get('phone'), request.form.get('email') 
+        if pnt.checkIfInt(phone):
+            g_admin_login.set_contact(name, surname, phone, email)
+            g_admin_data.updateAdmin(g_admin_login)
+            return redirect(url_for('admin.dashboard'))
+        return "incorrect phone format"
+    return redirect(url_for('admin.adminPage'))
+
+@admin_bp.route('/admin/adminSettings', methods=['POST', 'GET'])
+def adminSettings():
+    if 'email' in session:
+        g_admin_data = pnt.AdminData()
+        g_admin_login = g_admin_data.getByEmail(str(session.get('email', "")))
+        return render_template('admin-settings.html', admin=g_admin_login)
+    return redirect(url_for('admin.adminPage'))
+
 @admin_bp.route('/admin/receipt/<id>', methods=['POST', 'GET'])
 def receipt(id):
     receipt_data = pnt.ReceiptsData()
     receipt = receipt_data.get_by_id(int(id))
-<<<<<<< HEAD
+
     if receipt is None:
         return redirect(url_for('admin.dashboard'))
     mylist = ast.literal_eval(receipt.item)
     return render_template('receipt.html', receipt=receipt, orders=mylist)
-=======
+
     
-
-    return render_template('receipt.html', receipt=receipt)
->>>>>>> 2f45a1aa0eedaf4d920f0f49d7f349aaefa676a3
-
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
-    g_admin_data = pnt.AdminData()
+    
     if 'email' in session:
+        
         try:
             receipt_data = pnt.ReceiptsData()
             return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal(), users=len(pnt.UserData().accounts))

@@ -12,8 +12,9 @@ DATABASE = os.getenv('DATABASE_URL')
 def checkIfInt(n):
     try:
         return int(n)
-    except TypeError:
+    except ValueError:
         return False
+
 class Person(ABC):
     def __init__(self, firstname, surname, email, phone, password):
         self._firstname = firstname
@@ -239,6 +240,11 @@ class Cart:
         except:
             print('there were errors in Cart.deleteItem(arg) method')
             
+    def clearItems(self):
+        try:
+            self._list = []
+        except:
+            print('there were errors in Cart.clearItems() method')
     
     def getTotal(self):
         try:
@@ -280,6 +286,18 @@ class AdminData:
         return False
 
 
+    def updateAdmin(self, admin):
+        conn = sqlite3.connect(self.db)
+        cursor = conn.cursor()
+        cursor.execute('UPDATE admin SET name = ?, surname = ?, email = ?, phoneNo = ?', (admin.get_firstname,
+                                                                                                        admin.get_surname,
+                                                                                                        admin.get_email,
+                                                                                                        admin.get_phone,))
+        conn.commit()
+        conn.close()
+        
+
+
     """def save(self, admin):
         try:
             conn = sqlite3.connect(self.db)
@@ -318,6 +336,13 @@ class Admin(Person):
     def __init__(self, firstname, surname, email, phone, password):
         super().__init__(firstname, surname, email, phone, password)
         
+    
+    def set_contact(self, firstname, surname, phone, email):
+        self._firstname = firstname
+        self._surname = surname
+        self._phone = phone
+        self._email = email
+
     
     def __repr__(self) -> str:
         return f"({self.get_firstname},{self.get_surname},{self.get_email},{self.get_phone},{self.get_password})"  

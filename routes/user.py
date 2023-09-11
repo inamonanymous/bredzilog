@@ -39,8 +39,8 @@ def completed():
                 receipt = pnt.Receipts(int(), str(unique), str(name), str(address), str(phoneNo), int(money), str(), int(total_price), cart.showList)
                 receipt_data.save_to_db(receipt)
                 menus.decrement_qty(receipt)
-                clear_browser_session()
                 
+                clear_browser_session()
                 return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
         
             return redirect(url_for('main.deliverSetup'))
@@ -132,7 +132,7 @@ def toCheckout():
 @user_bp.route('/deliverSetup', methods=['POST', 'GET'])
 def deliverSetup():
     if session.get('nameuser') or session.get('user-email') is not None:
-        menu = menus.items
+        
         total = cart.getTotal()
         return render_template('deliver-setup.html', menu=menus, original_values=cart.showList[::-1], total=total)
     return redirect(url_for('main.userPage'))
@@ -211,9 +211,10 @@ def userDashboard():
     g_user_data = pnt.UserData()
     if 'user-email' in session:
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
-        
+        cart.clearItems()
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""), user_login=user_login, email=user_login.get_email)
     elif 'nameuser' in session:
+        cart.clearItems()
         return render_template('user-dashboard.html', nameuser=session.get('nameuser', ""))    
     return redirect(url_for('main.userPage'))
     
