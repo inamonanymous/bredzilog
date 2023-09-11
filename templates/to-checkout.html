@@ -10,8 +10,15 @@
         <p class="font-monospace text-danger">Total Amount TO PAY: ₱{{ plusDf }}</p>
         <form action="/formOfPayment" method="POST">
             <p class="font-monospace text-bg-info w-25 text-center">Select Payment Method</p>
+
+            {% if isDineIn %}
+            <button type="submit" name="cash-on-arr" id="cash-on-arr" value="0" class="font-monospace btn btn-outline-success btn-rounded btn-md">Cash On Arrival</button>
+            <button type="submit" name="g-cash" id="g-cash" value="1" class="font-monospace btn btn-outline-primary btn-rounded btn-md">Pay in G-Cash</button>
+            
+            {% else %}
             <button type="submit" name="cash-on-del" id="cash-on-del" value="0" class="font-monospace btn btn-outline-success btn-rounded btn-md">Cash On Delivery</button>
             <button type="submit" name="g-cash" id="g-cash" value="1" class="font-monospace btn btn-outline-primary btn-rounded btn-md">Pay in G-Cash</button>
+            {% endif %}
         </form>
     </div>
     <div class="container w-75 p-3">

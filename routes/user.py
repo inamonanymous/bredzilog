@@ -102,8 +102,25 @@ def processPayment():
 
 @user_bp.route('/formOfPayment', methods=['POST', 'GET'])
 def formOfPayment():
-    
     formString = str()
+    if session.get('isDineIn'):
+        if 'g-cash' in request.form:
+            session["isGcash"] = 1
+            formString = """
+                            <img src="../static/img/g-cash.jpg" alt="Admin's G-Cash QR" width="230" height="225"><form action="/processPayment" method="post" style="margin-top: 10px"><!-- G-Cash form fields --><input type="number" name="processingField" placeholder="Enter Reference Number" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit G-Cash" name="fromGcash" class="font-monospace btn btn-outline-primary btn-rounded btn-md mt-3"></form>
+                        """
+            print(session.get('isDineIn'))
+
+        if 'cash-on-arr' in request.form:
+            session["isGcash"] = 0
+            formString = """
+                        <form action="/processPayment" method="post"><!-- Cash-on-Arrival form fields --><input type="submit" value="Submit Cash" name="fromCash" class="font-monospace btn btn-outline-success btn-rounded btn-md mt-3"></form>
+                     """
+
+        if formString:
+            session['formString'] = formString
+            
+    
     if 'cash-on-del' in request.form:
         session["isGcash"] = 0
         formString = """
@@ -124,15 +141,28 @@ def toCheckout():
     total_amount = cart.getTotal()
     plusDf = total_amount+20
     formString = session.get('formString', "")
+    if session.get('isDineIn'):
+        if total_amount==0:
+            return redirect(url_for('main.tableReservation'))
+        return render_template('to-checkout.html', total_amount=total_amount, formString=formString, plusDf=plusDf, isDineIn=session.get('isDineIn'))
+
     if total_amount==0:
         return redirect(url_for('main.deliverSetup'))
     
-    return render_template('to-checkout.html', total_amount=total_amount, formString=formString, plusDf=plusDf)
+    return render_template('to-checkout.html', total_amount=total_amount, formString=formString, plusDf=plusDf, isDineIn=session.get('isDineIn'))
+
+@user_bp.route('/tableReservation', methods=['POST', 'GET'])
+def tableReservation():
+    if session.get('nameuser') or session.get('user-email') is not None:
+        session['isDineIn'] = True
+        total = cart.getTotal()
+        return render_template('table-reservation.html', menu=menus, original_values=cart.showList[::-1], total=total)
+    return redirect(url_for('main.userPage'))
 
 @user_bp.route('/deliverSetup', methods=['POST', 'GET'])
 def deliverSetup():
     if session.get('nameuser') or session.get('user-email') is not None:
-        
+        session['isDineIn'] = False
         total = cart.getTotal()
         return render_template('deliver-setup.html', menu=menus, original_values=cart.showList[::-1], total=total)
     return redirect(url_for('main.userPage'))
@@ -140,15 +170,21 @@ def deliverSetup():
 @user_bp.route('/deleteItem/<int:item_id>', methods=["POST", "GET"])
 def deleteItem(item_id):
     if 'user-email' or 'nameuser' in session:
+        if not session.get('isDineIn'):
+            cart.deleteItem(item_id)
+            return redirect(url_for('main.deliverSetup'))
         cart.deleteItem(item_id)
-        return redirect(url_for('main.deliverSetup'))
+        return redirect(url_for('main.tableReservation'))
     return redirect(url_for('main.userPage'))
 
 @user_bp.route('/addCart/<int:item_id>', methods=["POST", "GET"])
 def addCart(item_id):
     if 'user-email' or 'nameuser' in session:
+        if not session.get('isDineIn'):
+            cart.addItem(item_id)
+            return redirect(url_for('main.deliverSetup'))
         cart.addItem(item_id)
-        return redirect(url_for('main.deliverSetup'))
+        return redirect(url_for('main.tableReservation'))
     return redirect(url_for('main.userPage'))
 
 @user_bp.route('/signedUp', methods=['POST', 'GET'])
@@ -205,6 +241,8 @@ def userSettings():
         brgy, houseNo, street, municipality, province = user_login.get_per_address
         return render_template('user-settings.html', user_login=user_login, brgy=brgy, houseNo=houseNo, street=street, municipality=municipality, province=province)
     return redirect(url_for('main.userPage'))
+
+
 
 @user_bp.route('/userDashboard', methods=['POST', 'GET'])
 def userDashboard():

@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="container text-success">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="transparent-div">
+                <h2 class="text-primary">Zilog Hits</h2>
+                <table class="table-responsive text-light">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in menu.get_item_per_type()['hits'] %}
+                        <tr>
+                            <td>{{ i.name }}</td>
+                            <td>₱{{ i.price }}</td>
+                            <td>{{ i.qty }}</td>
+                            <td scope="row" colspan="2" class="font-monospace">
+                                <form action="/addCart/{{ i.id }}" method="POST">
+                                    <button type="submit" class="btn btn-outline-warning" name="add-cart" id="add-cart" value="{{ menu.id }}">Add to Cart</button>
+                                </form> 
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="transparent-div">
+                <h2 class="text-primary">Afford mo Zilog ko</h2>
+                <table class="table-responsive text-light">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in menu.get_item_per_type()['afford'] %}
+                        <tr>
+                            <td>{{ i.name }}</td>
+                            <td>₱{{ i.price }}</td>
+                            <td>{{ i.qty }}</td>
+                            <td scope="row" colspan="2" class="font-monospace">
+                                <form action="/addCart/{{ i.id }}" method="POST">
+                                    <button type="submit" class="btn btn-outline-warning" name="add-cart" id="add-cart" value="{{ menu.id }}">Add to Cart</button>
+                                </form> 
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="transparent-div">
+                <h2 class="text-primary">Sizzling ala Carte</h2>
+                <table class="table-responsive text-light">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in menu.get_item_per_type()['carte'] %}
+                        <tr>
+                            <td>{{ i.name }}</td>
+                            <td>₱{{ i.price }}</td>
+                            <td>{{ i.qty }}</td>
+                            <td scope="row" colspan="2" class="font-monospace">
+                                <form action="/addCart/{{ i.id }}" method="POST">
+                                    <button type="submit" class="btn btn-outline-warning" name="add-cart" id="add-cart" value="{{ menu.id }}">Add to Cart</button>
+                                </form> 
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="transparent-div">
+                <h2 class="text-primary">Add-Ons</h2>
+                <table class="table-responsive text-light">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in menu.get_item_per_type()['add_on'] %}
+                        <tr>
+                            <td>{{ i.name }}</td>
+                            <td>₱{{ i.price }}</td>
+                            <td>{{ i.qty }}</td>
+                            <td scope="row" colspan="2" class="font-monospace">
+                                <form action="/addCart/{{ i.id }}" method="POST">
+                                    <button type="submit" class="btn btn-outline-warning" name="add-cart" id="add-cart" value="{{ menu.id }}">Add to Cart</button>
+                                </form> 
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="cart-container text-primary">
+    <div>
+        <form action="/toCheckout" method="POST">
+            <p class="text-primary">
+                Total Amount: ₱<i>{{ total }}</i>
+                <button type="submit" name="checkout" id="checkout" value="{{ total }}" class="font-monospace btn btn-outline-success btn-rounded btn-md">
+                    Proceed to Checkout
+                </button>
+            </p>
+        </form>
+        <ul>
+            {% for x in original_values %}
+            <li class="text-light">
+                <form action="/deleteItem/{{ x.id }}" method="get">
+                    {{ x.name }}, ₱{{ x.price }}
+                    <button class="btn btn-outline-danger" type="submit" value="{{ x.id }}">Delete from Cart</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        
+    </div>
+    <a href="{{ url_for('main.userDashboard') }}"><button class="btn btn-outline-secondary">Back to Dashboard</button></a>
+</div>
+{% endblock %}
