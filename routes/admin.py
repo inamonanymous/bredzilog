@@ -67,10 +67,13 @@ def manageData():
         return render_template('manage-data.html', accounts=users.accounts)
     return redirect(url_for('admin.adminPage'))
 
-@admin_bp.route('/admin/receipt', methods=['POST', 'GET'])
-def receipt():
+@admin_bp.route('/admin/receipt/<id>', methods=['POST', 'GET'])
+def receipt(id):
     receipt_data = pnt.ReceiptsData()
-    return render_template('receipt.html', receipt_data=receipt_data)
+    receipt = receipt_data.get_by_id(int(id))
+    
+
+    return render_template('receipt.html', receipt=receipt)
 
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
@@ -78,7 +81,6 @@ def dashboard():
     if 'email' in session:
         try:
             receipt_data = pnt.ReceiptsData()
-            
             return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal(), users=len(pnt.UserData().accounts))
         except TypeError:
             return "render_template('admin-dashboard.html', receipts=list)"

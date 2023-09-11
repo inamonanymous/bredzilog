@@ -492,14 +492,14 @@ class ReceiptsData:
         self.fetch_from_database()
 
     def create_object(self, i):
-        unique, name, address, phone, from_customer, referrenceNo, totalPrice, item = i
-        return Receipts(unique, name, address, phone, from_customer, referrenceNo, totalPrice, item)
+        id, unique, name, address, phone, from_customer, referrenceNo, totalPrice, item = i
+        return Receipts(id, unique, name, address, phone, from_customer, referrenceNo, totalPrice, item)
 
-    def fetch_from_database(self) -> list:
+    def fetch_from_database(self):
         conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
 
-        cursor.execute('SELECT unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item FROM receipt ORDER BY id DESC')
+        cursor.execute('SELECT id, unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item FROM receipt ORDER BY id DESC')
         rows = cursor.fetchall()
 
         for i in rows:
@@ -516,6 +516,12 @@ class ReceiptsData:
 
         return final_id
 
+
+    def get_by_id(self, id):
+        for i in self.transactions:
+            if i.id == id:
+                return i
+        return None
 
     def save_to_db(self, receipt):
         try:
@@ -547,8 +553,9 @@ class ReceiptsData:
 
 
 class Receipts:
-    def __init__(self, unique, name, address, phone, from_customer, referrenceNo, price, item):
+    def __init__(self, id, unique, name, address, phone, from_customer, referrenceNo, price, item):
         self.db = DATABASE
+        self.id = id
         self.unique = unique
         self.name = name
         self.address = address
@@ -566,7 +573,8 @@ class Receipts:
                 {self.phone},
                 {self.from_customer},
                 {self.referrenceNo},
-                {self.price}
+                {self.price},
+                {self.item}
                 """
         
 
