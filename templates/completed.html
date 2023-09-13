@@ -15,7 +15,7 @@
             {% for i in this_cart %}
             <tr>
                 <td>{{ i.name }}</td>
-                <td>{{ i.price }}</td>
+                <td>₱{{ i.price }}</td>
                 <td>{{ i.type|capitalize }}</td>
             </tr>
             {% endfor %}
@@ -42,9 +42,9 @@
     </div>
     <a href="{{ url_for('main.userDashboard') }}"><button class="btn btn-outline-success">Order Again</button></a>
     <div class="container w-75 p-1" style="margin-top: 100px;">
-        <p class="font-monospace text-secondary">Your Order Amount: $<u>{{ total_price }}</u> <i class="float-sm-none">Delivery Fee Included (+$20)</i> </p>
-        <p class="font-monospace text-secondary">We Received: ${{ money }}</p>
-        <p class="font-monospace text-danger">Your Change: ${{ change }}</p>
+        <p class="font-monospace text-secondary">Your Order Amount: ₱<u>{{ total_price }}</u> <i class="float-sm-none">Delivery Fee Included (+$20)</i> </p>
+        <p class="font-monospace text-secondary">We Received: ₱{{ money }}</p>
+        <p class="font-monospace text-danger">Your Change: ₱{{ change }}</p>
     </div>
 
 

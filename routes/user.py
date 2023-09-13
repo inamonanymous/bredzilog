@@ -23,6 +23,7 @@ def logout():
 
 @user_bp.route('/completed', methods=['POST', 'GET'])
 def completed():
+    isDineIn = session.get('isDineIn')
     if 'isGcash' and 'money_from_cus' and 'nameuser' in session:
         baranggay,street, houseNo , municipality, province, name, phoneNo = request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province'), request.form.get('name'), request.form.get('phone')
         address = f"Brgy: {baranggay}, Street: {street}, House Number: {houseNo}, Municipality: {municipality}, Province: {province}"
@@ -44,12 +45,22 @@ def completed():
                 return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
         
             return redirect(url_for('main.deliverSetup'))
+        
+        
         total_price = int(cart.getTotal() + 20)
         money = "PAID WITHIN GCASH"
         change = "PAID WITHIN GCASH"
         referenceNo = session.get('referenceNo')
         unique = pnt.ReceiptsData.generate_unique_id()
         if cart.showList:
+            if isDineIn:
+                firstname, surname, phone = request.form.get('firstname'), request.form.get('firstname'), request.form.get('firstname')
+                fullname = f"{firstname} {surname}"
+                receipt = pnt.Receipts(int(), str(unique), str(fullname), str(), str(phone), int(), str(referenceNo), int(cart.getTotal()), cart.showList)
+                receipt_data.save_to_db(receipt)
+                return render_template('xcompleted.html', this_cart=cart.showList, total_price=cart.getTotal(), change=change, money=money)
+                
+
             receipt = pnt.Receipts(int(), unique, name, address, phoneNo, int(), referenceNo, total_price, cart.showList)
             menus.decrement_qty(receipt)
             receipt_data.save_to_db(receipt)
@@ -58,6 +69,10 @@ def completed():
             return render_template('completed.html', this_cart=cart.showList, total_price=total_price, change=change, money=money)
         return redirect(url_for('main.deliverSetup'))
     return redirect(url_for('main.userPage'))
+
+@user_bp.route('/tableReserving', methods=['POST', 'GET'])
+def tableReserving():
+    return redirect(url_for('main.completed'))
 
 @user_bp.route('/processPayment', methods=['POST', 'GET'])
 def processPayment():
@@ -68,11 +83,23 @@ def processPayment():
         input_field = request.form.get('processingField')
         isGcash = session.get('isGcash')
         nameuser = session.get('nameuser', "")
+        isDineIn = session.get('isDineIn')
+        
         if pnt.checkIfInt(input_field):
             if isGcash==1:
+                if isDineIn:
+                    if pnt.checkIfInt(input_field):
+                        reference = str(input_field)
+                        if len(reference)!=13:
+                            return "incorrect referrence number"
+                        session['referenceNo'] = reference
+                        return render_template('table-reserving.html', nameuser=nameuser, user_login=user_login)
+                    return f"please enter a form of number. You entered {reference}"
+
+
                 reference = str(input_field)
                 if len(reference)!=13:
-                    return "incorrect reference number"
+                    return "incorrect referrence number"
                 session['referenceNo'] = reference
                 divString = "<h1>THANK YOU FOR CHOOSING US!</h1>"
                 return render_template('processed.html', divString=divString, nameuser=nameuser, user_login=user_login, myBool=True)
@@ -103,18 +130,18 @@ def processPayment():
 @user_bp.route('/formOfPayment', methods=['POST', 'GET'])
 def formOfPayment():
     formString = str()
-    if session.get('isDineIn'):
+    isDineIn = session.get('isDineIn')
+    if isDineIn:
         if 'g-cash' in request.form:
             session["isGcash"] = 1
             formString = """
                             <img src="../static/img/g-cash.jpg" alt="Admin's G-Cash QR" width="230" height="225"><form action="/processPayment" method="post" style="margin-top: 10px"><!-- G-Cash form fields --><input type="number" name="processingField" placeholder="Enter Reference Number" class="form-control" style="max-width: 200px" required><input type="submit" value="Submit G-Cash" name="fromGcash" class="font-monospace btn btn-outline-primary btn-rounded btn-md mt-3"></form>
-                        """
-            print(session.get('isDineIn'))
+                        """           
 
         if 'cash-on-arr' in request.form:
             session["isGcash"] = 0
             formString = """
-                        <form action="/processPayment" method="post"><!-- Cash-on-Arrival form fields --><input type="submit" value="Submit Cash" name="fromCash" class="font-monospace btn btn-outline-success btn-rounded btn-md mt-3"></form>
+                        <a href=""><button class="btn btn-outline-success">Proceed</button></a>
                      """
 
         if formString:
@@ -141,15 +168,16 @@ def toCheckout():
     total_amount = cart.getTotal()
     plusDf = total_amount+20
     formString = session.get('formString', "")
-    if session.get('isDineIn'):
+    isDineIn = session.get('isDineIn')
+    if isDineIn:
         if total_amount==0:
             return redirect(url_for('main.tableReservation'))
-        return render_template('to-checkout.html', total_amount=total_amount, formString=formString, plusDf=plusDf, isDineIn=session.get('isDineIn'))
+        return render_template('to-checkout.html', total_amount=total_amount, formString=formString, plusDf=plusDf, isDineIn=isDineIn)
 
     if total_amount==0:
         return redirect(url_for('main.deliverSetup'))
     
-    return render_template('to-checkout.html', total_amount=total_amount, formString=formString, plusDf=plusDf, isDineIn=session.get('isDineIn'))
+    return render_template('to-checkout.html', total_amount=total_amount, formString=formString, plusDf=plusDf, isDineIn=isDineIn)
 
 @user_bp.route('/tableReservation', methods=['POST', 'GET'])
 def tableReservation():

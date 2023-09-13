@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table-reserving.css') }}">
+{% endblock %}
+{% block body %}
+<div class="custom-container">
+    <div class="col-md-3 custom-form">
+        <form action="/completed" method="post">
+            {% if user_login %}
+            <div class="mb-3">
+                <label for="firstname" class="form-label">Firstname</label>
+                <input type="text" class="form-control" id="firstname" name="firstname" value="{{ user_login.get_firstname }}">
+            </div>
+            <div class="mb-3">
+                <label for="surname" class="form-label">Surname</label>
+                <input type="text" class="form-control" id="surname" name="surname" value="{{ user_login.get_surname }}">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="phone" class="form-control" id="phone" name="phone" value="{{ user_login.get_phone }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            {% else %}
+            <div class="mb-3">
+                <label for="firstname" class="form-label">Firstname</label>
+                <input type="text" class="form-control" id="firstname" name="firstname" value="{{ nameuser }}">
+            </div>
+            <div class="mb-3">
+                <label for="surname" class="form-label">Surname</label>
+                <input type="text" class="form-control" id="surname" name="surname">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="phone" class="form-control" id="phone" name="phone">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

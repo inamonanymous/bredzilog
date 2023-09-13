@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/completed.css') }}">
+{% endblock %}
+{% block body %}
+    <div>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Section</th>
+                </tr>
+                
+                {% for i in this_cart %}
+                <tr>
+                    <td>{{ i.name }}</td>
+                    <td>₱{{ i.price }}</td>
+                    <td>{{ i.type|capitalize }}</td>
+                </tr>
+                {% endfor %}
+                
+            </table>
+        </div>
+        <a href="{{ url_for('main.userDashboard') }}"><button class="btn btn-outline-success">Order Again</button></a>
+        <div class="container w-75 p-1" style="margin-top: 100px;">
+            <p class="font-monospace text-secondary">Your Order Amount: ₱<u>{{ total_price }}</u> </p>
+            <p class="font-monospace text-secondary">PAID FROM GCASH</p>
+        </div>
+    </div>
+{% endblock %}
