@@ -93,7 +93,6 @@ def adminSettings():
 def receipt(id):
     receipt_data = pnt.ReceiptsData()
     receipt = receipt_data.get_by_id(int(id))
-
     if receipt is None:
         return redirect(url_for('admin.dashboard'))
     mylist = ast.literal_eval(receipt.item)
@@ -102,9 +101,7 @@ def receipt(id):
     
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
-    
     if 'email' in session:
-        
         try:
             receipt_data = pnt.ReceiptsData()
             return render_template('admin-dashboard.html', receipts=receipt_data.transactions, sum=receipt_data.sumTotal(), users=len(pnt.UserData().accounts))

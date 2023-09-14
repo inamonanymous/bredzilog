@@ -1,40 +1,52 @@
 {% extends "layout.html" %}
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-update-users-form.css') }}">
+{% endblock %}
 {% block body %}
-    <div>
-        <form action="/admin/updateUserSettings", method="post">
-            <label for="firstname">Firstname</label>
-            <input type="text" name="firstname" id="firstname" value="{{ user.get_firstname }}">
-            <br>
-            <label for="surname">Surname</label>
-            <input type="text" name="surname" id="surname" value="{{ user.get_surname }}">
-            <br>
-            <!--<label for="email">Email</label>
-            <input type="text" name="email" id="email" ">
-            <br>-->
-            <label for="phone">Phone</label>
-            <input type="text" name="phone" id="phone" value="{{ user.get_phone }}">
-            <br>
-            {% set brgy, municipality, province, street, houseNo = user.get_per_address %}
-            <label for="brgy">Baranggay</label>
-            <input type="text" name="brgy" id="brgy" value="{{ brgy }}">
-            <br>
-            <label for="municipality">Municipality</label>
-            <input type="text" name="municipality" id="municipality" value="{{ municipality }}">
-            <br>
-            <label for="province">Province</label>
-            <input type="text" name="province" id="province" value="{{ province }}">
-            <br>
-            <label for="street">Street</label>
-            <input type="text" name="street" id="street" value="{{ street }}">
-            <br>
-            <label for="houseNo">House #</label>
-            <input type="text" name="houseNo" id="houseNo" value="{{ houseNo }}" placeholder="Block and Lot if located at subdivision">
-            <br>
-            <input type="submit" value="Update User">
-            
-        </form>
-        <a href="{{ url_for('admin.manageData') }}">
-            <button>Back</button>
-        </a>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h5>Update User Settings</h5>
+            <form action="/admin/updateUserSettings" method="post">
+                <div class="form-group">
+                    <label for="firstname">First Name:</label>
+                    <input type="text" class="form-control" name="firstname" id="firstname" value="{{ user.get_firstname }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="surname">Surname:</label>
+                    <input type="text" class="form-control" name="surname" id="surname" value="{{ user.get_surname }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="text" class="form-control" name="phone" id="phone" value="{{ user.get_phone }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="brgy">Barangay:</label>
+                    <input type="text" class="form-control" name="brgy" id="brgy" value="{{ user.get_address['brgy'] }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="municipality">Municipality:</label>
+                    <input type="text" class="form-control" name="municipality" id="municipality" value="{{ user.get_address['municipality'] }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="province">Province:</label>
+                    <input type="text" class="form-control" name="province" id="province" value="{{ user.get_address['province'] }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="street">Street:</label>
+                    <input type="text" class="form-control" name="street" id="street" value="{{ user.get_address['street'] }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="houseNo">House #:</label>
+                    <input type="text" class="form-control" name="houseNo" id="houseNo" value="{{ user.get_address['houseNo'] }}" placeholder="Block and Lot if located at subdivision">
+                </div>
+                <br>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-primary">Update User</button>
+                </div>
+            </form>
+            <a href="{{ url_for('admin.manageData') }}" class="btn btn-outline-secondary">Back</a>
+        </div>
     </div>
+</div>
 {% endblock %}

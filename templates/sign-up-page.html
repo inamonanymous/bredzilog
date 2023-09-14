@@ -37,8 +37,11 @@
                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Sign Up</button>
+            <button type="submit" class="btn btn-outline-primary">Sign Up</button>
         </form>
+        <a href="{{ url_for('main.userPage') }}">
+            <button class="btn btn-secondary">Back</button>
+        </a>
     </div>
 </div>
 {% endblock %}

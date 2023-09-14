@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.custom-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: rgba(112, 33, 33, 0.7); /* Black background with some transparency */
+    padding: 20px;
+}
+
+.custom-form {
+    margin-top: 0; /* Remove top margin to align with the top of the container */
+}

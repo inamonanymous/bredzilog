@@ -6,8 +6,11 @@
 
     <div class="container w-75 p-1" style="margin-top: 50px;">
         <p class="font-monospace text-secondary">Your Order Amount: ₱{{ total_amount }}</p>
+        {% if not isDineIn %}
         <p class="font-monospace text-secondary">Delivery Fee: ₱20</p>
         <p class="font-monospace text-danger">Total Amount TO PAY: ₱{{ plusDf }}</p>
+        {% else %}
+        {% endif %}
         <form action="/formOfPayment" method="POST">
             <p class="font-monospace text-bg-info w-25 text-center">Select Payment Method</p>
 

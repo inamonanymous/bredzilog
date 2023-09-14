@@ -517,18 +517,19 @@ class ReceiptsData:
         self.fetch_from_database()
 
     def create_object(self, i):
-        id, unique, name, address, phone, from_customer, referrenceNo, totalPrice, item = i
+        id, unique, name, address, phone, from_customer, referrenceNo, totalPrice, item, isDineIn = i
         return Receipts(id, unique, name, address, phone, from_customer, referrenceNo, totalPrice, item)
 
     def fetch_from_database(self):
         conn = sqlite3.connect(self.db)
         cursor = conn.cursor()
 
-        cursor.execute('SELECT id, unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item FROM receipt ORDER BY id DESC')
+        cursor.execute('SELECT id, unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item, isDineIn FROM receipt ORDER BY id DESC')
         rows = cursor.fetchall()
 
         for i in rows:
             obj = self.create_object(i)
+            obj.isDineIn=i[9]
             self.transactions.append(obj)
         conn.close()
 
@@ -541,7 +542,6 @@ class ReceiptsData:
 
         return final_id
 
-
     def get_by_id(self, id):
         for i in self.transactions:
             if i.id == id:
@@ -553,7 +553,7 @@ class ReceiptsData:
             conn = sqlite3.connect(self.db)
             cursor = conn.cursor()
             
-            cursor.execute('INSERT INTO receipt (unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item) VALUES (?,?,?,?,?,?,?,?)', 
+            cursor.execute('INSERT INTO receipt (unique_id, name, Address, phoneNo, from_customer, referrenceNo, totalPrice, item, isDineIn) VALUES (?,?,?,?,?,?,?,?,?)', 
                         (receipt.unique,
                         receipt.name,
                         receipt.address,
@@ -561,7 +561,8 @@ class ReceiptsData:
                         receipt.from_customer,
                         receipt.referrenceNo,
                         receipt.price,
-                        str(receipt.item),))
+                        str(receipt.item),
+                        receipt.isDineIn,))
             conn.commit()
             conn.close()
         except sqlite3.IntegrityError:
@@ -576,7 +577,6 @@ class ReceiptsData:
         except:
             return -1
 
-
 class Receipts:
     def __init__(self, id, unique, name, address, phone, from_customer, referrenceNo, price, item):
         self.db = DATABASE
@@ -589,6 +589,7 @@ class Receipts:
         self.referrenceNo = referrenceNo
         self.price = price
         self.item = item
+        self.isDineIn = int
 
     def __repr__(self) -> str:
         return f"""

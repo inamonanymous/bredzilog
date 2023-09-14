@@ -38,7 +38,7 @@
                          </td>
                     <td>
                         <a href="{{ url_for('admin.updateUserEmail', user_email=user.get_email) }}">
-                            <button class="btn btn-primary">Update</button>
+                            <button class="btn btn-outline-primary">Update</button>
                         </a>
                     </td>
                 </tr>
@@ -46,6 +46,6 @@
             </tbody>
         </table>
     </div>
-    <a href="{{ url_for('admin.dashboard') }}"><button>Back</button></a>
+    <a href="{{ url_for('admin.dashboard') }}"><button class="btn btn-outline-secondary">Back</button></a>
 </div>
 {% endblock %}
