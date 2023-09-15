@@ -253,19 +253,32 @@ def signUpPage():
 @user_bp.route('/updateSettings', methods=['POST', 'GET'])
 def updateSettings():
     g_user_data = pnt.UserData()
-    name, surname, phone, brgy, street, houseNo, municipality, province = request.form.get('name'), request.form.get('surname'), request.form.get('phone'), request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province')
     if request.method == "POST":
         user_login = g_user_data.getByEmail(str(session.get('user-email', "")))
-        if user_login is not None and 'user-email' in session:
-            user_login.set_contact(name, surname, phone)
-            user_login.set_address(brgy, street, houseNo, municipality, province)
-            print(user_login)
-            print(str(user_login.get_address))
-            g_user_data.updateContact(user_login)
-            g_user_data.saveAddress(user_login)
-            
-            return redirect(url_for('main.userDashboard'))
+        if 'submit' in request.form:
+            name, surname, phone, brgy, street, houseNo, municipality, province = request.form.get('name'), request.form.get('surname'), request.form.get('phone'), request.form.get('brgy'), request.form.get('street'), request.form.get('houseNo'), request.form.get('municipality'), request.form.get('province')
+            if user_login is not None and 'user-email' in session:
+                user_login.set_contact(name, surname, phone)
+                user_login.set_address(brgy, street, houseNo, municipality, province)
+                print(user_login)
+                print(str(user_login.get_address))
+                g_user_data.updateContact(user_login)
+                g_user_data.saveAddress(user_login)
+                
+                return redirect(url_for('main.userDashboard'))
+        elif 'changePassword' in request.form:
+            return render_template('user-change-password.html')
         
+        elif 'savePass' in request.form:
+            oldPass, newPass, newPass2 = request.form.get('oldPass'), request.form.get('newPass'), request.form.get('newPass2')
+            if g_user_data.loginIsTrue(str(user_login.get_email), oldPass):
+                if newPass == newPass2:
+                    user_login.set_password(newPass)
+                    g_user_data.updatePassword(user_login)
+                    return redirect(url_for('main.userDashboard'))
+                return "passwords do not match"
+            return "Old password not true"
+
         return redirect(url_for('main.userSettings'))
     
     return redirect(url_for('main.userSettings'))

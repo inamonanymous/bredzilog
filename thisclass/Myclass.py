@@ -15,6 +15,9 @@ def checkIfInt(n):
     except ValueError:
         return False
 
+"""
+    Parent class of User and Admin
+"""
 class Person(ABC):
     def __init__(self, firstname, surname, email, phone, password):
         self._firstname = firstname
@@ -403,6 +406,15 @@ class UserData:
         except:
             print("there were errors in UserData.save(arg) method")
 
+    def updatePassword(self, user):
+        conn = sqlite3.connect(self.db)
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET password = ? WHERE email = ?',
+                        (generate_password_hash(user.get_password),
+                        user.get_email),)
+        conn.commit()
+        conn.close()
+        self.fetch_from_db()
     
     def updateContact(self, user):
         conn = sqlite3.connect(self.db)

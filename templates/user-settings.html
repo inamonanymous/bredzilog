@@ -21,6 +21,11 @@
               <label for="phone">Phone:</label>
               <input type="text" class="form-control" id="phone" name="phone" value="{{ user_login.get_phone }}" required>
           </div>
+          
+          <div class="form-group">
+            <input type="submit" class="btn btn-outline-warning" value="Change Password" name="changePassword">
+          </div>
+
       </fieldset>
       <fieldset>
           <legend>Add Shipping Address</legend>
@@ -46,7 +51,7 @@
           </div>
       </fieldset>
       <div class="form-group">
-          <input type="submit" class="btn btn-outline-primary" value="Save">
+          <input type="submit" class="btn btn-outline-primary" value="Save" name="submit">
       </div>
   </form>
   <a href="{{ url_for('main.userDashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
