@@ -1,3 +1,8 @@
+Introduction:
+  A Restaurant Management Flask Project, written by: Aguilar, Stephen Joaquin G. Includes features in User Mode such as, Sign-Up, Log-in, Enter as Stranger, Add to Cart, Checking out, Receipt, Update Settings, and Table Reservation. In the other hand, the Admin Mode also have super control features like, Update Inventory, Update-Users Info, Showing Receipts, and Update Settings.
+Data Structure Used? Each Data from Database is instanciated to a List.
+Average Algorithms speed? O(n)
+
 Setting Up:
   $git clone https://github.com/inamonanymous/bredzilog.git
   $pip install -r requirements.txt
