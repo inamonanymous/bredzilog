@@ -5,8 +5,13 @@ Average Algorithms speed? O(n)
 
 Setting Up:
   $git clone https://github.com/inamonanymous/bredzilog.git
-  $pip install -r requirements.txt
+  $python -m venv venv
   $venv/scripts/activate
+      {{{  IF UNIX-LIKE OS  }}}
+        $python3 -m venv venv
+        $source venv/bin/activate
+      {{{ ENDIF }}}
+  $pip install -r requirements.txt
   $flask run
 
 /*ERRORS MAY OCCUR BECAUSE OF OTHER MODULES USED ISN'T PROPERLY INSTALLED | PLEASE INSTALL REMAINING MODULES*/
