@@ -3,9 +3,7 @@ import thisclass.Myclass as pnt
 import ast
 
 admin_bp = Blueprint('admin', __name__)
-
 g_admin_login = None
-
 
 @admin_bp.route('/admin/logout', methods=['POST', 'GET'])
 def logout():
@@ -17,7 +15,6 @@ def setQuantity(id):
     if 'email' in session:
         menu = pnt.EachData()
         qty, isChecked = request.form.get(f"qty{id}"), request.form.get(f"is_enabled{id}")
-        
         if int(isChecked) == 4096:
             if pnt.checkIfInt(qty):
                 item = menu.get_obj_by_id(int(id))
@@ -43,15 +40,11 @@ def updateUserSettings():
         user_acc = user_data.getByEmail(str(session.get('user_data', "")))
         user_acc.set_address(brgy, street, houseNo, municipality, province)
         user_acc.set_contact(firstname, surname, phone)
-
         user_data.saveAddress(user_acc)
         user_data.updateContact(user_acc)
-
         return redirect(url_for('admin.manageData'))
-
     return redirect(url_for('admin.dashboard'))
         
-
 @admin_bp.route('/admin/update-user-id/<user_email>', methods=['POST', 'GET'])
 def updateUserEmail(user_email):
     if 'email' in session:
@@ -98,7 +91,6 @@ def receipt(id):
     mylist = ast.literal_eval(receipt.item)
     return render_template('receipt.html', receipt=receipt, orders=mylist)
 
-    
 @admin_bp.route('/admin/dashboard', methods=['POST', 'GET'])
 def dashboard():
     if 'email' in session:
@@ -123,10 +115,9 @@ def signedin():
                 session.pop('email', None)
                 return "session expired"
             session["email"] = g_admin_login.get_email
-            print(session.get('email'))
             return redirect(url_for('admin.dashboard'))
         else: 
-            return f"ay ,{g_admin_data.accounts} mali, "
+            return f"invalid username or password"
     return redirect(url_for('admin.adminPage'))
 
 @admin_bp.route('/admin/adminPage', methods=['POST', 'GET'])
